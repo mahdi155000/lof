@@ -1,6 +1,6 @@
 #                       IN THE NAME OF GOD
 import os
-from Asset import backend, plugins
+from Asset import plugins
 import termcolor2, pyfiglet
 
 print(termcolor2.colored(pyfiglet.figlet_format("IN THE NAME OF GOD"), 'red'))
@@ -8,6 +8,11 @@ print(termcolor2.colored(pyfiglet.figlet_format("IN THE NAME OF GOD"), 'red'))
 
 def plus(item):
     M_L[item - 1][2] += 1
+
+
+def fill_list(loff):
+    for work in loff:
+        M_L.insert(10000, work)
 
 
 def show_item(do_what='plus'):
@@ -78,6 +83,9 @@ while True:
     if what_to_do == 'q' or what_to_do == '':
         exit(0)
     elif what_to_do in plugins.plugins_list:
-        pass
+        # elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
+        getattr(plugins, what_to_do)()
+        # plugins.locals()
+        # locals()[what_to_do]()
     else:
         print("Your command is not supported")

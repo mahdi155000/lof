@@ -1,21 +1,16 @@
 #       IN THE NAME OF GOD
 # from Asset import backend
 from Asset.backend import *
-import termcolor2, pyfiglet
+import termcolor2
 
 plugins_list = ['add', 'remove', 'rename', 'revalue', 'reid', 'update', 'show']
 M_L = []
 
 
-def save_data(value_, file="LOF.py"):
-    with open(PATH + file, 'w') as f:
-        f.write("M_L = " + str(value_))
-        f.close()
-
-
-def fill_list(loff):
-    for work in loff:
-        M_L.insert(100000, work)
+# def save_data(value_, file="LOF.py"):
+#     with open(PATH + file, 'w') as f:
+#         f.write("M_L = " + str(value_))
+#         f.close()
 
 
 def add():
