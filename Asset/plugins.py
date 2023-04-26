@@ -1,6 +1,6 @@
 #       IN THE NAME OF GOD
 # from Asset import backend
-from Asset.backend import *
+from Asset import backend
 import termcolor2
 
 plugins_list = ['add', 'remove', 'rename', 'revalue', 'reid', 'update', 'show']
@@ -19,38 +19,40 @@ def fill_list(loff):
 def add():
     add_title = input("Enter Title: ")
     add_value = input("Input Value: ")
+    if type(int(add_value)) is int:
+        add_value = int(add_value)
     add_constant = input("Enter Constant: ")
     add_comment = input("If you want, enter comment: ")
-    insert(add_title, add_value, add_constant, add_comment)
+    backend.insert(add_title, add_value, add_constant, add_comment)
 
 
 def remove():
     item_you_want_to_delete = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to delete: ")) - 1
     items = M_L[item_you_want_to_delete]
-    delete(items[0])
+    backend.delete(items[0])
 
 
 def rename():
     item_you_want_to_rename = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
     items = M_L[item_you_want_to_rename]
     x_item = input(f"Enter new {termcolor2.colored('number', 'yellow')}: ")
-    update(items[0], x_item, items[2], items[3], items[4])
+    backend.update(items[0], x_item, items[2], items[3], items[4])
 
 
 def revalue():
     item_you_want_to_revalue = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
     items = M_L[item_you_want_to_revalue]
     x_item = input(f"Enter new {termcolor2.colored('value', 'yellow')}: ")
-    update(items[0], items[1], x_item, items[3], items[4])
+    backend.update(items[0], items[1], x_item, items[3], items[4])
 
 
 def reid():
     item_you_want_to_reid = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
-    items = M_L[item_you_want_to_reid ][0]
+    items = M_L[item_you_want_to_reid][0]
     x_value = input(f"Enter new {termcolor2.colored('reid', 'yellow')}: ")
-    update_id(items, 0)
-    update_id(x_value, items)
-    update_id(0, x_value)
+    backend.update_id(items, 0)
+    backend.update_id(x_value, items)
+    backend.update_id(0, x_value)
 
 
 def update():
@@ -72,12 +74,13 @@ def update():
     elif updated_comment == '':
         updated_title = items[4]
         print(items[4])
-    update(items[0], updated_title, updated_value, updated_constant, updated_comment)
+    backend.update(items[0], updated_title, updated_value, updated_constant, updated_comment)
 
 
 def show():
     for work in M_L:
         print(work[1], work[2])
+
 
 def help():
     print("You can use this function: ")
@@ -85,4 +88,4 @@ def help():
         print("->" + i)
 
 
-fill_list(view())
+fill_list(backend.view())

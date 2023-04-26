@@ -1,11 +1,18 @@
 #                       IN THE NAME OF GOD
 import os
+import sqlite3
+import os
 from Asset import plugins
 from Asset import backend
 import termcolor2, pyfiglet
 
 print(termcolor2.colored(pyfiglet.figlet_format("IN THE NAME OF GOD"), 'red'))
 
+if os.path.dirname(__file__) == '':
+    PATH = '.' + os.path.sep
+else:
+    PATH = os.path.dirname(__file__)
+    PATH = PATH + os.path.sep
 
 def plus(item):
     M_L[item - 1][2] += 1
@@ -63,25 +70,32 @@ show_item("plus")
 
 while True:
     what_to_do = input("->:\n").lower()
+    INT_check_var = False
     try:
         if type(int(what_to_do)) == int:
             try:
                 lNumber = int(what_to_do)
                 if lNumber >= 0:
                     addNumber = 1
-                    li = M_L[lNumber - 1][2]
-                    M_L[lNumber - 1][2] += 1
+                    li = M_L[lNumber - 1]
+                    backend.update(li[0], title=li[1], value_=int(li[2]) + addNumber, constant=li[3], comment=li[4])
+                    # M_L[lNumber - 1][2] += 1
                 elif lNumber < 0:
                     lNumber = abs(lNumber)
                     addNumber = -1
                     li = M_L[lNumber - 1][2]
-                    M_L[lNumber - 1][2] -= 1
+                    backend.update(li[0], title=li[1], value_=int(li[2]) + addNumber, constant=li[3], comment=li[4])
+                    # M_L[lNumber - 1][2] -= 1
                 print(M_L[lNumber - 1])
-            except:
+                INT_check_var = True
+            except Exception as e:
                 print("Your input number not in range")
-    except:
+    except Exception as e:
+        # print(e)
         pass
-    if what_to_do == 'q' or what_to_do == '':
+    if INT_check_var:
+        pass
+    elif what_to_do == 'q' or what_to_do == '':
         exit(0)
     # elif what_to_do in plugins.plugins_list:
     elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
@@ -92,3 +106,6 @@ while True:
         show_item()
     else:
         print("Your command is not supported")
+    conn = sqlite3.connect(PATH + "Asset/list_of_work.db")
+    conn.commit()
+    conn.close()
