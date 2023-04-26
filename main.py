@@ -1,12 +1,10 @@
 #                       IN THE NAME OF GOD
 import os
-import termcolor2
-import pyfiglet
+from Asset import backend, plugins
+import termcolor2, pyfiglet
 
 print(termcolor2.colored(pyfiglet.figlet_format("IN THE NAME OF GOD"), 'red'))
 
-
-# print(termcolor2.colored(pyfiglet.figlet_format('IN THE NAME OF GOD'), 'red'))
 
 def plus(item):
     M_L[item - 1][2] += 1
@@ -26,18 +24,18 @@ def show_item(do_what='plus'):
         #     os_tab_number = 4
         # print("I change tab number for Windows")
         if l <= os_tab_number:
-            text = str(num) + f') for  {doWhat} one ' + f'"{work[1]}": \t\t\t\t\t"{work[2]}'
-            # text = str(num) + f') For {doWhat} one ' + f'"{work[1]}":\t\t\t\t\t"{work[2]}"'
+            text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t\t\t\t\t"{work[2]}'
+            # text = str(num) + f') For {do_what} one ' + f'"{work[1]}":\t\t\t\t\t"{work[2]}"'
         elif l <= os_tab_number * 2:
-            text = str(num) + f') for  {doWhat} one ' + f'"{work[1]}": \t\t\t\t"{work[2]}'
+            text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t\t\t\t"{work[2]}'
         elif l <= os_tab_number * 3:
-            text = str(num) + f') for  {doWhat} one ' + f'"{work[1]}": \t\t\t"{work[2]}'
+            text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t\t\t"{work[2]}'
         elif l <= os_tab_number * 4:
-            text = str(num) + f') for  {doWhat} one ' + f'"{work[1]}": \t\t"{work[2]}'
+            text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t\t"{work[2]}'
         elif l <= os_tab_number * 5:
-            text = str(num) + f') for  {doWhat} one ' + f'"{work[1]}": \t"{work[2]}'
+            text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t"{work[2]}'
         elif l > os_tab_number * 5:
-            text = str(num) + f') for  {doWhat} one ' + f'"{work[1]}": "{work[2]}'
+            text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": "{work[2]}'
         print(termcolor2.colored(text, color))
 
 
@@ -55,24 +53,31 @@ work_counter = 1
 #     print(f"{work_counter}) {work[1]}")
 #     work_counter += 1
 show_item("plus")
-print("enter 'c' for go to command mode.")
+# print("enter 'c' for go to command mode.")
 
 while True:
     what_to_do = input("->:\n").lower()
+    try:
+        if type(int(what_to_do)) == int:
+            try:
+                lNumber = int(what_to_do)
+                if lNumber >= 0:
+                    addNumber = 1
+                    li = M_L[lNumber - 1][2]
+                    M_L[lNumber - 1][2] += 1
+                elif lNumber < 0:
+                    lNumber = abs(lNumber)
+                    addNumber = -1
+                    li = M_L[lNumber - 1][2]
+                    M_L[lNumber - 1][2] -= 1
+                print(M_L[lNumber - 1])
+            except:
+                print("Your input number not in range")
+    except:
+        pass
     if what_to_do == 'q' or what_to_do == '':
         exit(0)
-    elif type(int(what_to_do)) == int:
-        try:
-            lNumber = int(what_to_do)
-            if lNumber >= 0:
-                addNumber = 1
-                li = M_L[lNumber - 1][2]
-                M_L[lNumber - 1][2] += 1
-            elif lNumber < 0:
-                lNumber = abs(lNumber)
-                addNumber = -1
-                li = M_L[lNumber - 1][2]
-                M_L[lNumber - 1][2] -= 1
-            print(M_L[lNumber - 1])
-        except:
-            print("Your entry does not supported")
+    elif what_to_do in plugins.plugins_list:
+        pass
+    else:
+        print("Your command is not supported")
