@@ -50,7 +50,9 @@ def show_item(do_what='plus'):
 M_L = []
 
 fill_list(backend.view())
-
+print("---------------------------------------------")
+print(M_L)
+print("---------------------------------------------")
 print("Please enter your number:\n0) add\\minus\\set manually")
 work_counter = 1
 # for work in M_L:

@@ -46,7 +46,7 @@ def revalue():
 
 def reid():
     item_you_want_to_reid = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
-    items = M_L[item_you_want_to_reid ]
+    items = M_L[item_you_want_to_reid ][0]
     x_value = input(f"Enter new {termcolor2.colored('reid', 'yellow')}: ")
     update_id(items, 0)
     update_id(x_value, items)

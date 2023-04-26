@@ -15,7 +15,7 @@ def connect():
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
     cur.execute(
-        "CREATE TABLE IF NOT EXISTS lof (id INTEGER PRYMARY KEY, title TEXT, value_ BLOB, constant text, comment TEXT)")
+        "CREATE TABLE IF NOT EXISTS lof (id INTEGER PRIMARY KEY, title TEXT, value_ BLOB, constant text, comment TEXT)")
     conn.commit()
     conn.close()
 
@@ -64,7 +64,7 @@ def update(id, title='', value_='', constant='', comment=''):
     conn.close()
 
 
-def update_id(last_id, new_id):
+def update_id(last_i, new_id):
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
     cur.execute("UPDATE lof SET id=? WHERE id=?", (new_id, last_id))
@@ -76,6 +76,5 @@ connect()
 # print(view())
 # insert('Movies',1,'S04',"This is a movies")
 # insert('Movies',0,"S04",'this is a movies')
-# delete()
 # update(1,'halo', 3, 'S02','This is a film')
 # update_id(4,3)
