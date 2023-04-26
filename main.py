@@ -1,6 +1,7 @@
 #                       IN THE NAME OF GOD
 import os
 from Asset import plugins
+from Asset import backend
 import termcolor2, pyfiglet
 
 print(termcolor2.colored(pyfiglet.figlet_format("IN THE NAME OF GOD"), 'red'))
@@ -44,13 +45,11 @@ def show_item(do_what='plus'):
         print(termcolor2.colored(text, color))
 
 
-class Action:
-    def __init__(self):
-        self.M_L = M_L
+# M_L = [[1, "test", 15], [2, "are you OK", 52]]
 
+M_L = []
 
-M_L = [[1, "test", 15], [2, "are you OK", 52]]
-acls = Action()
+fill_list(backend.view())
 
 print("Please enter your number:\n0) add\\minus\\set manually")
 work_counter = 1
@@ -82,10 +81,12 @@ while True:
         pass
     if what_to_do == 'q' or what_to_do == '':
         exit(0)
-    elif what_to_do in plugins.plugins_list:
-        # elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
+    # elif what_to_do in plugins.plugins_list:
+    elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
         getattr(plugins, what_to_do)()
         # plugins.locals()
         # locals()[what_to_do]()
+    elif what_to_do == "show item":
+        show_item()
     else:
         print("Your command is not supported")

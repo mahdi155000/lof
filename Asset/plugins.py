@@ -11,6 +11,9 @@ M_L = []
 #     with open(PATH + file, 'w') as f:
 #         f.write("M_L = " + str(value_))
 #         f.close()
+def fill_list(loff):
+    for work in loff:
+        M_L.insert(10000, work)
 
 
 def add():
@@ -28,22 +31,22 @@ def remove():
 
 
 def rename():
-    item_you_want_to_delete = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
-    items = M_L[item_you_want_to_delete]
+    item_you_want_to_rename = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
+    items = M_L[item_you_want_to_rename]
     x_item = input(f"Enter new {termcolor2.colored('number', 'yellow')}: ")
     update(items[0], x_item, items[2], items[3], items[4])
 
 
 def revalue():
-    item_you_want_to_delete = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
-    items = M_L[item_you_want_to_delete]
+    item_you_want_to_revalue = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
+    items = M_L[item_you_want_to_revalue]
     x_item = input(f"Enter new {termcolor2.colored('value', 'yellow')}: ")
     update(items[0], items[1], x_item, items[3], items[4])
 
 
 def reid():
-    item_you_want_to_delete = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
-    items = M_L[item_you_want_to_delete]
+    item_you_want_to_reid = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
+    items = M_L[item_you_want_to_reid ]
     x_value = input(f"Enter new {termcolor2.colored('reid', 'yellow')}: ")
     update_id(items, 0)
     update_id(x_value, items)
@@ -51,8 +54,8 @@ def reid():
 
 
 def update():
-    item_you_want_to_delete = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
-    items = M_L[item_you_want_to_delete]
+    item_you_want_to_update = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
+    items = M_L[item_you_want_to_update]
     updated_title = input("Enter new title: ")
     updated_value = input("Enter new value: ")
     updated_constant = input("Enter new constant: ")
@@ -73,8 +76,13 @@ def update():
 
 
 def show():
-    items = M_L[0]
-    print(items[1], items[2], items[3], items[4])
+    for work in M_L:
+        print(work[1], work[2])
+
+def help():
+    print("You can use this function: ")
+    for i in plugins_list:
+        print("->" + i)
 
 
 fill_list(view())
