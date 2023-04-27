@@ -1,9 +1,11 @@
 #       IN THE NAME OF GOD
 # from Asset import backend
 from Asset import backend
+import os
 import termcolor2
 
-plugins_list = ['add', 'remove', 'rename', 'revalue', 'reid', 'update', 'show', 'sort']
+plugins_list = ['add', 'remove', 'rename', 'revalue', 'reid', 'update', 'show', 'sort', 'clear']
+exit_list = ['q', 'bye', 'quit', 'exit']
 M_L = []
 
 
@@ -111,6 +113,13 @@ def sort():
         backend.update_id(item[0], counter)
         # item[0] = counter
         counter += 1
+
+
+def clear():
+    if os.name == 'nt':
+        os.system("cls")
+    else:
+        os.system("clear")
 
 
 M_L = []

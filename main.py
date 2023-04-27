@@ -114,7 +114,7 @@ while True:
         pass
     if INT_check_var:
         pass
-    elif what_to_do == 'q' or what_to_do == '':
+    elif what_to_do in plugins.exit_list:
         exit(0)
     # elif what_to_do in plugins.plugins_list:
     elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
