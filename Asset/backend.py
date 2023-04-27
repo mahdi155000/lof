@@ -1,14 +1,13 @@
 #               IN THE NAME OF GOD
-import os.path
+import os
 import sqlite3
 import shutil
-from os import path
 
 if os.path.dirname(__file__) == '':
     PATH = '.' + os.path.sep
 else:
-    PATH = path.dirname(__file__)
-    PATH = PATH + path.sep
+    PATH = os.path.dirname(__file__)
+    PATH = PATH + os.path.sep
 
 
 def connect():
