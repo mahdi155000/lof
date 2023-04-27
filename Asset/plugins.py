@@ -19,8 +19,11 @@ def fill_list(loff):
 def add():
     add_title = input("Enter Title: ")
     add_value = input("Input Value: ")
-    if type(int(add_value)) is int:
-        add_value = int(add_value)
+    try:
+        if type(int(add_value)) is int:
+            add_value = int(add_value)
+    except:
+        pass
     add_constant = input("Enter Constant: ")
     add_comment = input("If you want, enter comment: ")
     backend.insert(add_title, add_value, add_constant, add_comment)

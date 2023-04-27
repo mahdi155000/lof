@@ -6,6 +6,8 @@ from Asset import plugins
 from Asset import backend
 import termcolor2, pyfiglet
 
+if os.name == 'nt':
+    os.system('color')
 print(termcolor2.colored(pyfiglet.figlet_format("IN THE NAME OF GOD"), 'red'))
 
 if os.path.dirname(__file__) == '':
@@ -62,10 +64,15 @@ def new_show(do_what='plus'):
     # print(" {:<10} {:<10} {:<10}".format(key, *value))
     # print(" {:<10} {:<10} {:<10}".format(key, value[0], value[1]))
     for item in M_L:
-        if item[0] < 10:
-            print(" {:<1}) for {} one {:<45} {}".format(item[0], do_what, item[1], item[2]))
+        if item[0] % 2:
+            show_color = 'blue'
         else:
-            print("{:<1}) for {} one {:<45} {}".format(item[0], do_what, item[1], item[2]))
+            show_color = 'red'
+        if item[0] < 10:
+            text = (" {:<1}) for {} one {:<45} {}".format(item[0], do_what, item[1], item[2]))
+        else:
+            text = ("{:<1}) for {} one {:<45} {}".format(item[0], do_what, item[1], item[2]))
+        print(termcolor2.colored(text, show_color))
 
 
 # M_L = [[1, "test", 15], [2, "are you OK", 52]]
@@ -104,7 +111,6 @@ while True:
                     li = M_L[lNumber - 1][2]
                     backend.update(li[0], title=li[1], value_=int(li[2]) + addNumber, constant=li[3], comment=li[4])
                     # M_L[lNumber - 1][2] -= 1
-                print(M_L[lNumber - 1])
                 INT_check_var = True
             except Exception as e:
                 print("Your input number not in range")
@@ -121,9 +127,14 @@ while True:
         # plugins.locals()
         # locals()[what_to_do]()
     elif what_to_do == "show item":
-        show_item()
+        # show_item()
+        new_show()
     else:
         print("Your command is not supported")
-    conn = sqlite3.connect(PATH + "Asset/list_of_work.db")
-    conn.commit()
-    conn.close()
+
+    try:
+        M_L = []
+        fill_list(backend.view())
+        print(M_L[lNumber - 1])
+    except:
+        print("Operating failed!!!")
