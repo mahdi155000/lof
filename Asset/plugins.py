@@ -91,4 +91,13 @@ def help():
         print("->" + i)
 
 
+def sort():
+    counter = 1
+    for item in M_L:
+        backend.update(counter, item[1], item[2], item[3], item[4])
+        # item[0] = counter
+        counter += 1
+    fill_list(backend.view())
+
+
 fill_list(backend.view())

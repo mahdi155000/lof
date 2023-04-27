@@ -57,12 +57,6 @@ def show_item(do_what='plus'):
 
 def new_show(do_what='plus'):
     show_dict = {t[0]: t[:1] for t in M_L}
-    # for key, value in show_dict.items():
-    #     # print(" {:<1}) for {} one  {:<10} {:<10}".format("key", do_what, 'VALUE 1', 'VALUE 2'))
-    #     print(" {:<1}) for {} one  {:<10} {:<10}".format(key, value))
-    # for key, value in show_dict.items():
-    # print(" {:<10} {:<10} {:<10}".format(key, *value))
-    # print(" {:<10} {:<10} {:<10}".format(key, value[0], value[1]))
     for item in M_L:
         if item[0] % 2:
             show_color = 'blue'
@@ -123,7 +117,11 @@ while True:
         exit(0)
     # elif what_to_do in plugins.plugins_list:
     elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
-        getattr(plugins, what_to_do)()
+        try:
+            getattr(plugins, what_to_do)()
+        except Exception as e:
+            print("I can't run your command.")
+            print(e)
         # plugins.locals()
         # locals()[what_to_do]()
     elif what_to_do == "show item":
@@ -135,6 +133,12 @@ while True:
     try:
         M_L = []
         fill_list(backend.view())
+        counter = 1
+        for item in M_L:
+            backend.update(counter, item[1], item[2], item[3], item[4])
+
+        lNumber = int(what_to_do)
         print(M_L[lNumber - 1])
-    except:
+    except Exception as e:
         print("Operating failed!!!")
+        # print(e)
