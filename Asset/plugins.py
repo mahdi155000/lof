@@ -3,7 +3,7 @@
 from Asset import backend
 import termcolor2
 
-plugins_list = ['add', 'remove', 'rename', 'revalue', 'reid', 'update', 'show']
+plugins_list = ['add', 'remove', 'rename', 'revalue', 'reid', 'update', 'show', 'sort']
 M_L = []
 
 

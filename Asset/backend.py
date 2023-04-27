@@ -64,7 +64,7 @@ def update(id, title='', value_='', constant='', comment=''):
     conn.close()
 
 
-def update_id(last_i, new_id):
+def update_id(last_id, new_id):
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
     cur.execute("UPDATE lof SET id=? WHERE id=?", (new_id, last_id))

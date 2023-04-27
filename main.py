@@ -56,18 +56,18 @@ def show_item(do_what='plus'):
 
 
 def new_show(do_what='plus'):
-    show_dict = {t[0]: t[:1] for t in M_L}
-
+    id_counter = 1
     for item in M_L:
         if item[0] % 2:
             show_color = 'blue'
         else:
             show_color = 'red'
         if item[0] < 10:
-            text = (" {:<1}) for {} one {:<45} {}".format(item[0], do_what, item[1], item[2]))
+            text = (" {:<1}) for {} one {:<45} {}".format(id_counter, do_what, item[1], item[2]))
         else:
-            text = ("{:<1}) for {} one {:<45} {}".format(item[0], do_what, item[1], item[2]))
+            text = ("{:<1}) for {} one {:<45} {}".format(id_counter, do_what, item[1], item[2]))
         print(termcolor2.colored(text, show_color))
+        id_counter += 1
 
 
 # M_L = [[1, "test", 15], [2, "are you OK", 52]]
@@ -121,8 +121,10 @@ while True:
         try:
             getattr(plugins, what_to_do)()
         except Exception as e:
-            print("I can't run your command.")
-            print(e)
+            pass
+            # print("I can't run your command.")
+            # print(e)
+
         # plugins.locals()
         # locals()[what_to_do]()
     elif what_to_do == "show item":
