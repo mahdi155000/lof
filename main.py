@@ -112,9 +112,7 @@ while True:
     except Exception as e:
         # print(e)
         pass
-    if INT_check_var:
-        pass
-    elif what_to_do == 'q' or what_to_do == '':
+    if what_to_do == 'q' or what_to_do == '':
         exit(0)
     # elif what_to_do in plugins.plugins_list:
     elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
@@ -130,18 +128,17 @@ while True:
     elif what_to_do == "show item":
         # show_item()
         new_show()
+    elif INT_check_var:
+        pass
     else:
         print("Your command is not supported")
 
+    M_L = []
+    fill_list(backend.view())
     try:
-        M_L = []
-        fill_list(backend.view())
-        counter = 1
-        for item in M_L:
-            backend.update(counter, item[1], item[2], item[3], item[4])
-
         lNumber = int(what_to_do)
         print(M_L[lNumber - 1])
     except Exception as e:
-        print("Operating failed!!!")
+        pass
+        # print("Operating failed!!!")
         # print(e)
