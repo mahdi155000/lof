@@ -57,6 +57,7 @@ def show_item(do_what='plus'):
 
 def new_show(do_what='plus'):
     show_dict = {t[0]: t[:1] for t in M_L}
+
     for item in M_L:
         if item[0] % 2:
             show_color = 'blue'
