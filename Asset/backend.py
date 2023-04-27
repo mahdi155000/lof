@@ -15,15 +15,15 @@ def connect():
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
     cur.execute(
-        "CREATE TABLE IF NOT EXISTS lof (id INTEGER PRIMARY KEY, title TEXT, value_ BLOB, constant text, comment TEXT)")
+        "CREATE TABLE IF NOT EXISTS lof (id INTEGER PRIMARY KEY, title TEXT, value BLOB, constant text, comment TEXT)")
     conn.commit()
     conn.close()
 
 
-def insert(titile='', value_='', constant='', comment=''):
+def insert(titile='', value='', constant='', comment=''):
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
-    cur.execute("INSERT INTO lof VALUES (NULL, ?, ?, ?, ?)", (titile, value_, constant, comment))
+    cur.execute("INSERT INTO lof VALUES (NULL, ?, ?, ?, ?)", (titile, value, constant, comment))
     conn.commit()
     conn.close()
 
@@ -37,11 +37,11 @@ def view():
     return row
 
 
-def search(title, value_, comment, constant):
+def search(title, value, comment, constant):
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
-    cur.execute("SELECT * FROM lof WHERE title=? OR value_=? OR constant=? OR comment=?",
-                (title, value_, constant, comment))
+    cur.execute("SELECT * FROM lof WHERE title=? OR value=? OR constant=? OR comment=?",
+                (title, value, constant, comment))
     row = cur.fetchall()
     conn.close()
     return row
@@ -55,11 +55,11 @@ def delete(id):
     conn.close()
 
 
-def update(id, title='', value_='', constant='', comment=''):
+def update(id, title='', value='', constant='', comment=''):
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
-    cur.execute("UPDATE lof SET  title=?, value_=?, constant=?, comment=? WHERE id=?",
-                (title, value_, constant, comment, id))
+    cur.execute("UPDATE lof SET  title=?, value=?, constant=?, comment=? WHERE id=?",
+                (title, value, constant, comment, id))
     conn.commit()
     conn.close()
 

@@ -98,19 +98,19 @@ while True:
                 if lNumber >= 0:
                     addNumber = 1
                     li = M_L[lNumber - 1]
-                    backend.update(li[0], title=li[1], value_=int(li[2]) + addNumber, constant=li[3], comment=li[4])
+                    backend.update(li[0], title=li[1], value=int(li[2]) + addNumber, constant=li[3], comment=li[4])
                     # M_L[lNumber - 1][2] += 1
                 elif lNumber < 0:
                     lNumber = abs(lNumber)
                     addNumber = -1
                     li = M_L[lNumber - 1][2]
-                    backend.update(li[0], title=li[1], value_=int(li[2]) + addNumber, constant=li[3], comment=li[4])
+                    backend.update(li[0], title=li[1], value=int(li[2]) + addNumber, constant=li[3], comment=li[4])
                     # M_L[lNumber - 1][2] -= 1
                 INT_check_var = True
             except Exception as e:
                 print("Your input number not in range")
     except Exception as e:
-        print(e)
+        # print(e)
         pass
     if INT_check_var:
         pass
@@ -125,7 +125,7 @@ while True:
         except Exception as e:
             pass
             # print("I can't run your command.")
-            print(e)
+            # print(e)
 
         # plugins.locals()
         # locals()[what_to_do]()
