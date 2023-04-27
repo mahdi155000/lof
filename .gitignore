@@ -164,3 +164,4 @@ cython_debug/
 Asset/*.db
 Asset/list_of_work.db
 Asset/gpghome/
+Asset/dbxdata.py

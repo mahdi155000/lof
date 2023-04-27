@@ -26,35 +26,6 @@ def fill_list(loff):
         M_L.insert(10000, work)
 
 
-def show_item(do_what='plus'):
-    num = 0
-    for work in M_L:
-        num += 1
-        if num % 2 == 0:
-            color = 'blue'
-        else:
-            color = 'red'
-        l = len(str(work[1]))
-        os_tab_number = 6
-        # if os.name == 'nt':
-        #     os_tab_number = 4
-        # print("I change tab number for Windows")
-        if l < os_tab_number:
-            text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t\t\t\t"{work[2]}'
-            # text = str(num) + f') For {do_what} one ' + f'"{work[1]}":\t\t\t\t\t"{work[2]}"'
-        elif l < os_tab_number * 2:
-            text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t\t\t\t"{work[2]}'
-        elif l < os_tab_number * 3:
-            text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t\t\t"{work[2]}'
-        elif l < os_tab_number * 4:
-            text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t\t"{work[2]}'
-        elif l < os_tab_number * 5:
-            text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t"{work[2]}'
-        elif l > os_tab_number * 5:
-            text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": "{work[2]}'
-        print(termcolor2.colored(text, color))
-
-
 def new_show(do_what='plus'):
     id_counter = 1
     for item in M_L:
@@ -134,6 +105,7 @@ while True:
         new_show()
     elif what_to_do == "show item":
         from Asset import plugins
+
         plugins.show_item()
     else:
         print("Your command is not supported")
