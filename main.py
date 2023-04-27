@@ -110,26 +110,31 @@ while True:
             except Exception as e:
                 print("Your input number not in range")
     except Exception as e:
-        # print(e)
+        print(e)
         pass
-    if what_to_do == 'q' or what_to_do == '':
+    if INT_check_var:
+        pass
+    elif what_to_do == 'q' or what_to_do == '':
         exit(0)
     # elif what_to_do in plugins.plugins_list:
     elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
         try:
             getattr(plugins, what_to_do)()
+            M_L = []
+            fill_list(backend.view())
         except Exception as e:
             pass
             # print("I can't run your command.")
-            # print(e)
+            print(e)
 
         # plugins.locals()
         # locals()[what_to_do]()
-    elif what_to_do == "show item":
+    elif what_to_do == "show":
         # show_item()
         new_show()
-    elif INT_check_var:
-        pass
+    elif what_to_do == "show item":
+        from Asset import plugins
+        plugins.show_item()
     else:
         print("Your command is not supported")
 

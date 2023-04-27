@@ -17,6 +17,8 @@ def fill_list(loff):
 
 
 def add():
+    fill_list(backend.view())
+    M_L = backend.view()
     add_title = input("Enter Title: ")
     add_value = input("Input Value: ")
     try:
@@ -30,6 +32,8 @@ def add():
 
 
 def remove():
+    fill_list(backend.view())
+    M_L = backend.view()
     item_you_want_to_delete = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to delete: ")) - 1
     items = M_L[item_you_want_to_delete]
     backend.delete(items[0])
@@ -50,15 +54,19 @@ def revalue():
 
 
 def reid():
+    fill_list(backend.view())
+    M_L = backend.view()
     item_you_want_to_reid = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
-    items = M_L[item_you_want_to_reid][0]
+    items = M_L[item_you_want_to_reid]
     x_value = input(f"Enter new {termcolor2.colored('reid', 'yellow')}: ")
-    backend.update_id(items, 0)
-    backend.update_id(x_value, items)
+    backend.update_id(items[0], 0)
+    backend.update_id(x_value, items[0])
     backend.update_id(0, x_value)
 
 
 def update():
+    fill_list(backend.view())
+    M_L = backend.view()
     item_you_want_to_update = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
     items = M_L[item_you_want_to_update]
     updated_title = input("Enter new title: ")
@@ -68,21 +76,24 @@ def update():
     if updated_title == '':
         updated_title = items[1]
         print(items[1])
-    elif updated_value == '':
-        updated_title = items[2]
+    if updated_value == '':
+        updated_value = items[2]
         print(items[2])
-    elif updated_constant == '':
-        updated_title = items[3]
+    if updated_constant == '':
+        updated_constant = items[3]
         print(items[3])
-    elif updated_comment == '':
-        updated_title = items[4]
+    if updated_comment == '':
+        updated_comment = items[4]
         print(items[4])
     backend.update(items[0], updated_title, updated_value, updated_constant, updated_comment)
 
 
-def show():
+def show_item():
+    fill_list(backend.view())
+    M_L = backend.view()
     for work in M_L:
-        print(work[1], work[2])
+        # print(work[1], work[2])
+        print(work)
 
 
 def help():
@@ -92,6 +103,8 @@ def help():
 
 
 def sort():
+    fill_list(backend.view())
+    M_L = backend.view()
     counter = 1
     for item in M_L:
         # backend.update(counter, item[1], item[2], item[3], item[4])
@@ -99,5 +112,6 @@ def sort():
         # item[0] = counter
         counter += 1
 
-M_L=[]
+
+M_L = []
 fill_list(backend.view())
