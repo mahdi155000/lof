@@ -163,3 +163,4 @@ cython_debug/
 # Mahdi added
 Asset/*.db
 Asset/list_of_work.db
+Asset/
