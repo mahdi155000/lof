@@ -14,6 +14,7 @@ else:
     PATH = os.path.dirname(__file__)
     PATH = PATH + os.path.sep
 
+
 def plus(item):
     M_L[item - 1][2] += 1
 
@@ -36,20 +37,35 @@ def show_item(do_what='plus'):
         # if os.name == 'nt':
         #     os_tab_number = 4
         # print("I change tab number for Windows")
-        if l <= os_tab_number:
-            text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t\t\t\t\t"{work[2]}'
-            # text = str(num) + f') For {do_what} one ' + f'"{work[1]}":\t\t\t\t\t"{work[2]}"'
-        elif l <= os_tab_number * 2:
+        if l < os_tab_number:
             text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t\t\t\t"{work[2]}'
-        elif l <= os_tab_number * 3:
+            # text = str(num) + f') For {do_what} one ' + f'"{work[1]}":\t\t\t\t\t"{work[2]}"'
+        elif l < os_tab_number * 2:
+            text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t\t\t\t"{work[2]}'
+        elif l < os_tab_number * 3:
             text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t\t\t"{work[2]}'
-        elif l <= os_tab_number * 4:
+        elif l < os_tab_number * 4:
             text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t\t"{work[2]}'
-        elif l <= os_tab_number * 5:
+        elif l < os_tab_number * 5:
             text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": \t"{work[2]}'
         elif l > os_tab_number * 5:
             text = str(num) + f') for  {do_what} one ' + f'"{work[1]}": "{work[2]}'
         print(termcolor2.colored(text, color))
+
+
+def new_show(do_what='plus'):
+    show_dict = {t[0]: t[:1] for t in M_L}
+    # for key, value in show_dict.items():
+    #     # print(" {:<1}) for {} one  {:<10} {:<10}".format("key", do_what, 'VALUE 1', 'VALUE 2'))
+    #     print(" {:<1}) for {} one  {:<10} {:<10}".format(key, value))
+    # for key, value in show_dict.items():
+    # print(" {:<10} {:<10} {:<10}".format(key, *value))
+    # print(" {:<10} {:<10} {:<10}".format(key, value[0], value[1]))
+    for item in M_L:
+        if item[0] < 10:
+            print(" {:<1}) for {} one {:<45} {}".format(item[0], do_what, item[1], item[2]))
+        else:
+            print("{:<1}) for {} one {:<45} {}".format(item[0], do_what, item[1], item[2]))
 
 
 # M_L = [[1, "test", 15], [2, "are you OK", 52]]
@@ -60,12 +76,14 @@ fill_list(backend.view())
 print("---------------------------------------------")
 print(M_L)
 print("---------------------------------------------")
-print("Please enter your number:\n0) add\\minus\\set manually")
+# print("{:<3}) {:<50} {:<10}".format('num', 'work', 'value'))
+# print("Please enter your number:\n0) add\\minus\\set manually")
 work_counter = 1
 # for work in M_L:
 #     print(f"{work_counter}) {work[1]}")
 #     work_counter += 1
-show_item("plus")
+# show_item("plus")
+new_show()
 # print("enter 'c' for go to command mode.")
 
 while True:
