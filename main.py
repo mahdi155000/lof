@@ -16,11 +16,13 @@ else:
     PATH = os.path.dirname(__file__)
     PATH = PATH + os.path.sep
 
-if os.path.isfile(PATH + f"Asset{os.sep}config.py") and os.path.isfile(PATH + f"Asset{os.sep}list_of_work.db"):
+encrypted_database = False
+if os.path.isfile(PATH + f"Asset{os.sep}config.py"):
     from Asset import config
 
-    config.decrypt()
     encrypted_database = True
+    if os.path.isfile(PATH + f"Asset{os.sep}list_of_work.db.gpg"):
+        config.decrypt()
 
 
 def plus(item):
@@ -93,10 +95,13 @@ while True:
         pass
     elif what_to_do in plugins.exit_list:
         if encrypted_database:
-        # if os.path.isfile(PATH + f"Asset{os.sep}config.py"):
+            # if os.path.isfile(PATH + f"Asset{os.sep}config.py"):
             config.encrypt()
             # os.remove('list_of_work.db', PATH + "Asset")
             os.remove(PATH + f"Asset{os.sep}list_of_work.db")
+        elif not os.path.isfile(PATH + f"Asset{os.sep}list_of_work.db.gpg") and os.path.isfile(
+                PATH + f"Asset{os.sep}config.py"):
+            config.encrypt()
         exit(0)
     # elif what_to_do in plugins.plugins_list:
     elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
@@ -130,4 +135,3 @@ while True:
         pass
         # print("Operating failed!!!")
         # print(e)
-
