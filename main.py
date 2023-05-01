@@ -16,6 +16,12 @@ else:
     PATH = os.path.dirname(__file__)
     PATH = PATH + os.path.sep
 
+if os.path.isfile(PATH + f"Asset{os.sep}config.py") and os.path.isfile(PATH + f"Asset{os.sep}list_of_work.db"):
+    from Asset import config
+
+    config.decrypt()
+    encrypted_database = True
+
 
 def plus(item):
     M_L[item - 1][2] += 1
@@ -86,6 +92,11 @@ while True:
     if INT_check_var:
         pass
     elif what_to_do in plugins.exit_list:
+        if encrypted_database:
+        # if os.path.isfile(PATH + f"Asset{os.sep}config.py"):
+            config.encrypt()
+            # os.remove('list_of_work.db', PATH + "Asset")
+            os.remove(PATH + f"Asset{os.sep}list_of_work.db")
         exit(0)
     # elif what_to_do in plugins.plugins_list:
     elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
@@ -119,3 +130,4 @@ while True:
         pass
         # print("Operating failed!!!")
         # print(e)
+
