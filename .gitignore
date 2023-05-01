@@ -165,3 +165,5 @@ Asset/*.db
 Asset/list_of_work.db
 Asset/gpghome/
 Asset/dbxdata.py
+Asset/config.py
+Asset/list_of_work.db.gpg
