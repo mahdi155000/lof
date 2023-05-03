@@ -82,7 +82,7 @@ while True:
                 elif lNumber < 0:
                     lNumber = abs(lNumber)
                     addNumber = -1
-                    li = M_L[lNumber - 1][2]
+                    li = M_L[lNumber - 1]
                     backend.update(li[0], title=li[1], value=int(li[2]) + addNumber, constant=li[3], comment=li[4])
                     # M_L[lNumber - 1][2] -= 1
                 INT_check_var = True
