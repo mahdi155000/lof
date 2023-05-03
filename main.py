@@ -129,7 +129,7 @@ while True:
     M_L = []
     fill_list(backend.view())
     try:
-        lNumber = int(what_to_do)
+        # lNumber = int(what_to_do)
         print(M_L[lNumber - 1])
     except Exception as e:
         pass
