@@ -49,7 +49,7 @@ def rename():
 
 
 def revalue():
-    item_you_want_to_revalue = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
+    item_you_want_to_revalue = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to revlaue: ")) - 1
     items = M_L[item_you_want_to_revalue]
     x_item = input(f"Enter new {termcolor2.colored('value', 'yellow')}: ")
     backend.update(items[0], items[1], x_item, items[3], items[4])
@@ -58,7 +58,7 @@ def revalue():
 def reid():
     fill_list(backend.view())
     M_L = backend.view()
-    item_you_want_to_reid = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
+    item_you_want_to_reid = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to reid: ")) - 1
     items = M_L[item_you_want_to_reid]
     x_value = input(f"Enter new {termcolor2.colored('reid', 'yellow')}: ")
     backend.update_id(items[0], 0)
@@ -69,7 +69,7 @@ def reid():
 def update():
     fill_list(backend.view())
     M_L = backend.view()
-    item_you_want_to_update = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
+    item_you_want_to_update = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to update: ")) - 1
     items = M_L[item_you_want_to_update]
     updated_title = input("Enter new title: ")
     updated_value = input("Enter new value: ")
