@@ -42,7 +42,7 @@ def remove():
 
 
 def rename():
-    item_you_want_to_rename = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to rename: ")) - 1
+    item_you_want_to_rename = int(input(f"Enter {termcolor2.colored('name', 'yellow')} you want to rename: ")) - 1
     items = M_L[item_you_want_to_rename]
     x_item = input(f"Enter new {termcolor2.colored('number', 'yellow')}: ")
     backend.update(items[0], x_item, items[2], items[3], items[4])
