@@ -1,4 +1,4 @@
-t#                       IN THE NAME OF GOD
+#                       IN THE NAME OF GOD
 import os
 import sqlite3
 import os
@@ -143,7 +143,10 @@ while True:
 
         plugins.show_item()
     elif what_to_do in plugins:
-        plugins[what_to_do]()
+        try:
+            plugins[what_to_do]()
+        except:
+            print("You are not entering the connrect information. Please try again!")
     else:
         print("Your command is not supported")
 
