@@ -5,7 +5,21 @@ import os
 from Asset import plugins
 from Asset import backend
 import termcolor2, pyfiglet
+import importlib
 
+def import_features():
+    features = {}
+    # the features directory path
+    features_dir = "Asset/features"
+
+    # make a list from all files inside the feature direcotry
+    for filename in os.listdir(features_dir):
+        if filename.endswith(".py") and filename != ("__init__.py"):
+            module_name = filename[:-3] # remove '.py' part from the name
+            module = importlib.import_module(f'{features_dir}.{module_name}')
+            features[module_name] = module 
+            
+    
 if os.name == 'nt':
     os.system('color')
 print(termcolor2.colored(pyfiglet.figlet_format("IN THE NAME OF GOD"), 'red'))
