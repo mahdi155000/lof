@@ -1,4 +1,4 @@
-#                       IN THE NAME OF GOD
+t#                       IN THE NAME OF GOD
 import os
 import sqlite3
 import os
@@ -123,13 +123,13 @@ while True:
             config.encrypt()
         exit(0)
     # elif what_to_do in plugins.plugins_list:
-    elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
-        try:
-            getattr(plugins, what_to_do)()
-            M_L = []
-            fill_list(backend.view())
-        except Exception as e:
-            pass
+    # elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
+    #     try:
+    #         getattr(plugins, what_to_do)()
+    #         M_L = []
+    #         fill_list(backend.view())
+    #     except Exception as e:
+    #         pass
             # print("I can't run your command.")
             # print(e)
 
