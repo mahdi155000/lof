@@ -1,1 +1,1 @@
-exit_list = ['exit', 'quit']
+exit_list = ['exit', 'quit', 'bye', 'good bye']
