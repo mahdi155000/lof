@@ -10,7 +10,7 @@ import importlib
 def import_plugins():
     plugins = {}
     # the plugins directory path
-    plugins_dir = "Asset/features"
+    plugins_dir = "Asset/plugins"
 
     # make a list from all files inside the feature direcotry
     for filename in os.listdir(plugins_dir):

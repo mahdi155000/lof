@@ -9,6 +9,10 @@ else:
     PATH = os.path.dirname(__file__)
     PATH = PATH + os.path.sep
 
+M_L = []
+def fill_list(loff):
+    for work in loff:
+        M_L.insert(10000,work)
 
 def connect():
     conn = sqlite3.connect(PATH + "list_of_work.db")
