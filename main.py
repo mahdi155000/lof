@@ -2,10 +2,15 @@
 import os
 import sqlite3
 import os
-from Asset import plugins
+# from Asset import plugins
 from Asset import backend
 import termcolor2, pyfiglet
+import importlib
+from Asset.plugins import exit_list 
+from plugin import plugins
 
+            
+    
 if os.name == 'nt':
     os.system('color')
 print(termcolor2.colored(pyfiglet.figlet_format("IN THE NAME OF GOD"), 'red'))
@@ -24,6 +29,18 @@ if os.path.isfile(PATH + f"Asset{os.sep}config.py"):
     if os.path.isfile(PATH + f"Asset{os.sep}list_of_work.db.gpg"):
         config.decrypt()
 
+def import_plugins():
+    plugins = {}
+    # the plugins directory path
+    plugins_dir = "Asset.plugins"  # change to directory
+
+    # make a list from all files inside the plugins directory
+    for filename in os.listdir(f"{PATH}Asset{os.sep}plugins"):  # directory path
+        if filename.endswith(".py") and filename != "__init__.py":
+            module_name = filename[:-3]  # remove '.py' part from the name
+            module = importlib.import_module(f'{plugins_dir}.{module_name}')  # استفاده از نام بسته
+            plugins[module_name] = module 
+    return plugins
 
 def plus(item):
     M_L[item - 1][2] += 1
@@ -67,6 +84,8 @@ work_counter = 1
 new_show()
 # print("enter 'c' for go to command mode.")
 
+import_plugins()
+
 while True:
     what_to_do = input("->:\n").lower()
     INT_check_var = False
@@ -93,7 +112,7 @@ while True:
         pass
     if INT_check_var:
         pass
-    elif what_to_do in plugins.exit_list:
+    elif what_to_do in exit_list:
         if encrypted_database:
             # if os.path.isfile(PATH + f"Asset{os.sep}config.py"):
             config.encrypt()
@@ -104,13 +123,13 @@ while True:
             config.encrypt()
         exit(0)
     # elif what_to_do in plugins.plugins_list:
-    elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
-        try:
-            getattr(plugins, what_to_do)()
-            M_L = []
-            fill_list(backend.view())
-        except Exception as e:
-            pass
+    # elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
+    #     try:
+    #         getattr(plugins, what_to_do)()
+    #         M_L = []
+    #         fill_list(backend.view())
+    #     except Exception as e:
+    #         pass
             # print("I can't run your command.")
             # print(e)
 
@@ -123,6 +142,11 @@ while True:
         from Asset import plugins
 
         plugins.show_item()
+    elif what_to_do in plugins:
+        try:
+            plugins[what_to_do]()
+        except:
+            print("You are not entering the connrect information. Please try again!")
     else:
         print("Your command is not supported")
 
