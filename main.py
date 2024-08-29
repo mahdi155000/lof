@@ -65,24 +65,14 @@ def new_show(do_what='plus'):
         print(termcolor2.colored(text, show_color))
         id_counter += 1
 
-
-# M_L = [[1, "test", 15], [2, "are you OK", 52]]
-
 M_L = []
 
 fill_list(backend.view())
 print("---------------------------------------------")
 print(M_L)
 print("---------------------------------------------")
-# print("{:<3}) {:<50} {:<10}".format('num', 'work', 'value'))
-# print("Please enter your number:\n0) add\\minus\\set manually")
 work_counter = 1
-# for work in M_L:
-#     print(f"{work_counter}) {work[1]}")
-#     work_counter += 1
-# show_item("plus")
 new_show()
-# print("enter 'c' for go to command mode.")
 
 import_plugins()
 
@@ -114,29 +104,13 @@ while True:
         pass
     elif what_to_do in exit_list:
         if encrypted_database:
-            # if os.path.isfile(PATH + f"Asset{os.sep}config.py"):
             config.encrypt()
-            # os.remove('list_of_work.db', PATH + "Asset")
             os.remove(PATH + f"Asset{os.sep}list_of_work.db")
         elif not os.path.isfile(PATH + f"Asset{os.sep}list_of_work.db.gpg") and os.path.isfile(
                 PATH + f"Asset{os.sep}config.py"):
             config.encrypt()
         exit(0)
-    # elif what_to_do in plugins.plugins_list:
-    # elif hasattr(plugins, what_to_do) and callable(getattr(plugins, what_to_do)):
-    #     try:
-    #         getattr(plugins, what_to_do)()
-    #         M_L = []
-    #         fill_list(backend.view())
-    #     except Exception as e:
-    #         pass
-            # print("I can't run your command.")
-            # print(e)
-
-        # plugins.locals()
-        # locals()[what_to_do]()
     elif what_to_do == "show":
-        # show_item()
         new_show()
     elif what_to_do == "show item":
         from Asset import plugins
@@ -153,9 +127,6 @@ while True:
     M_L = []
     fill_list(backend.view())
     try:
-        # lNumber = int(what_to_do)
         print(M_L[lNumber - 1])
     except Exception as e:
         pass
-        # print("Operating failed!!!")
-        # print(e)
