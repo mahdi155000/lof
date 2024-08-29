@@ -5,7 +5,7 @@ there is also avalaible in [gitlab](https://gitlab.com/mahdi155000/lof).
 python main.py
 ```
 
-This project is out of the side and switch to __nlof__, and will be avaiable on my github and gitlab son.
+~~This project is out of the side and switch to __nlof__, and will be avaiable on my github and gitlab son.~~
 
 # Project Title
 
@@ -51,3 +51,8 @@ I highly recommend setting up a Python virtual environment.
 3. Run the main file:
   ```bash
   pyhton3 main.py
+```
+ 
+## Contact
+- Make an issue
+- email me at [mahdi155000@gmail.com](mailto:mahdi155000@gmail.com)
