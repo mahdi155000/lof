@@ -51,19 +51,19 @@ def fill_list(loff):
         M_L.insert(10000, work)
 
 
-def new_show(do_what='plus'):
-    id_counter = 1
-    for item in M_L:
-        if item[0] % 2:
-            show_color = 'blue'
-        else:
-            show_color = 'red'
-        if item[0] < 10:
-            text = (" {:<1}) for {} one {:<45} {}".format(id_counter, do_what, item[1], item[2]))
-        else:
-            text = ("{:<1}) for {} one {:<45} {}".format(id_counter, do_what, item[1], item[2]))
-        print(termcolor2.colored(text, show_color))
-        id_counter += 1
+# def new_show(do_what='plus'):
+#     id_counter = 1
+#     for item in M_L:
+#         if item[0] % 2:
+#             show_color = 'blue'
+#         else:
+#             show_color = 'red'
+#         if item[0] < 10:
+#             text = (" {:<1}) for {} one {:<45} {}".format(id_counter, do_what, item[1], item[2]))
+#         else:
+#             text = ("{:<1}) for {} one {:<45} {}".format(id_counter, do_what, item[1], item[2]))
+#         print(termcolor2.colored(text, show_color))
+#         id_counter += 1
 
 M_L = []
 
@@ -72,7 +72,8 @@ print("---------------------------------------------")
 print(M_L)
 print("---------------------------------------------")
 work_counter = 1
-new_show()
+# new_show()
+# plugins['show']()
 
 import_plugins()
 
@@ -110,8 +111,8 @@ while True:
                 PATH + f"Asset{os.sep}config.py"):
             config.encrypt()
         exit(0)
-    elif what_to_do == "show":
-        new_show()
+    # elif what_to_do == "show":
+    #     new_show()
     elif what_to_do in plugins:
         try:
             plugins[what_to_do]()
