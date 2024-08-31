@@ -11,6 +11,7 @@ def fill_list(loff):
         
 @plugin("add")
 def add_function():
+    """This function will add a new title into program database"""
     fill_list(backend.view())
     M_L = backend.view()
     add_title = input("Enter Title: ")
