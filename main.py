@@ -50,20 +50,8 @@ def fill_list(loff):
     for work in loff:
         M_L.insert(10000, work)
 
+import_plugins()
 
-# def new_show(do_what='plus'):
-#     id_counter = 1
-#     for item in M_L:
-#         if item[0] % 2:
-#             show_color = 'blue'
-#         else:
-#             show_color = 'red'
-#         if item[0] < 10:
-#             text = (" {:<1}) for {} one {:<45} {}".format(id_counter, do_what, item[1], item[2]))
-#         else:
-#             text = ("{:<1}) for {} one {:<45} {}".format(id_counter, do_what, item[1], item[2]))
-#         print(termcolor2.colored(text, show_color))
-#         id_counter += 1
 
 M_L = []
 
@@ -72,10 +60,8 @@ print("---------------------------------------------")
 print(M_L)
 print("---------------------------------------------")
 work_counter = 1
-# new_show()
-# plugins['show']()
+plugins["show"]()
 
-import_plugins()
 
 while True:
     what_to_do = input("->:\n").lower()

@@ -10,6 +10,8 @@ def fill_list(loff):
 
 @plugin("show")
 def show_function(do_what='plus'):
+    fill_list(backend.view())
+    M_L= backend.view()
     id_counter = 1
     for item in M_L:
         if item[0] % 2:
