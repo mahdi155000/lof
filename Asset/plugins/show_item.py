@@ -9,8 +9,8 @@ def fill_list(loff):
 fill_list(backend.view())
 
         
-@plugin("show-item")
-def show_item_function():
+@plugin("show item")
+def show_item():
     """for now it has to be change
     """
     for work in M_L:

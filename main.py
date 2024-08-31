@@ -112,10 +112,6 @@ while True:
         exit(0)
     elif what_to_do == "show":
         new_show()
-    elif what_to_do == "show item":
-        from Asset import plugins
-
-        plugins.show_item()
     elif what_to_do in plugins:
         try:
             plugins[what_to_do]()
