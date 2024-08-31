@@ -1,6 +1,6 @@
 import os
 import importlib
-from plugin import plugins,plugin
+from plugin import plugins,plugin, register_help, help_registry
 
 if os.path.dirname(__file__) == '':
     PATH = '.' + os.path.sep
@@ -23,6 +23,10 @@ def import_plugins():
 import_plugins()
 
 
+@register_help
 @plugin("test")
-def test_function():
-    print(plugins)
+def test_function(command=None):
+    if command:
+        return help_registry.get(command, f"No help available for '{command}'")
+    print(register_help)
+    return help_registry

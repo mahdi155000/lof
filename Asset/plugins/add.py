@@ -1,4 +1,4 @@
-from plugin import plugin
+from plugin import plugin, register_help
 from Asset import backend
 import termcolor2
 
@@ -9,6 +9,7 @@ def fill_list(loff):
         M_L.insert(10000, work)
 
         
+@register_help
 @plugin("add")
 def add_function():
     """This function will add a new title into program database"""
