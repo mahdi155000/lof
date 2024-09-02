@@ -1,40 +1,34 @@
-from plugin import plugin
+import os
+import importlib
+from plugin import plugins,plugin, register_help, help_registry
 
-# Sample help data
-help_data = {
-    "show": {
-        "description": "Displays items from the list.",
-        "usage": "show [item]",
-        "examples": [
-            "show - Display all items",
-            "show item - Display specific item details"
-        ],
-        "parameters": {
-            "item": "Specifies the item to show. If omitted, shows all items."
-        }
-    },
-    # Add more commands here
-}
+if os.path.dirname(__file__) == '':
+    PATH = '.' + os.path.sep
+else:
+    PATH = os.path.dirname(__file__)
+    PATH = PATH + os.path.sep
+def import_plugins():
+    plugins = {}
+    # the plugins directory path
+    plugins_dir = "Asset.plugins"  # change to directory
 
-@plugin("help")
-def help_function(command=None):
-    
-    if command is None:
-        print("Available commands:")
-        for cmd in help_data.keys():
-            print(f"- {cmd}")
-        print("\nUse 'help [command]' for more details on a specific command.")
-    else:
-        cmd_help = help_data.get(command)
-        if cmd_help:
-            print(f"Command: {command}")
-            print(f"Description: {cmd_help['description']}")
-            print(f"Usage: {cmd_help['usage']}")
-            print("Examples:")
-            for example in cmd_help['examples']:
-                print(f"  {example}")
-            print("Parameters:")
-            for param, desc in cmd_help['parameters'].items():
-                print(f"  {param}: {desc}")
-        else:
-            print(f"No help available for command '{command}'.")
+    # make a list from all files inside the plugins directory
+    for filename in os.listdir(f"{PATH}"):  # directory path
+        if filename.endswith(".py") and filename != "__init__.py":
+            module_name = filename[:-3]  # remove '.py' part from the name
+            module = importlib.import_module(f'{plugins_dir}.{module_name}')  # استفاده از نام بسته
+            plugins[module_name] = module 
+    return plugins
+
+import_plugins()
+
+
+@register_help
+@plugin("test")
+def test_function(command=None):
+    # if command:
+    #     return help_registry.get(command, f"No help available for '{command}'")
+    # print(register_help)
+    # return help_registry
+    for i in plugins.keys():
+        print(f"-> {i}")
