@@ -10,18 +10,6 @@ else:
     PATH = PATH + os.path.sep
 current_workspace = 'lof'
 
-def create_tables():
-    connection = sqlite3.connect(PATH + 'list_of_work.db')
-    cursor = connection.cursor()
-    cursor.execute(f'''
-    CREATE TABLE IF NOT EXISTS {current_workspace} (
-        id INTEGER PRIMARY KEY,
-        title TEXT,
-        year INTEGER,
-        genre TEXT
-    )''')
-    connection.commit()
-    connection.close()
 
 def connect(workspace='lof'):
     conn = sqlite3.connect(PATH + "list_of_work.db")
