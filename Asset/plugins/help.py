@@ -24,7 +24,7 @@ import_plugins()
 
 
 @register_help
-@plugin("test")
+@plugin("help")
 def test_function(command=None):
     # if command:
     #     return help_registry.get(command, f"No help available for '{command}'")
