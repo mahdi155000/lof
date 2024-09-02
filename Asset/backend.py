@@ -102,6 +102,8 @@ def fill_list(loff):
     for work in loff:
         M_L.insert(10000, work)
 
+fill_list(view())
+M_L = view()
 connect()
 # print(view())
 # insert('Movies',1,'S04',"This is a movies")

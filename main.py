@@ -101,8 +101,9 @@ while True:
     elif what_to_do in plugins:
         try:
             plugins[what_to_do]()
-        except:
-            print("You are not entering the connrect information. Please try again!")
+        except KeyError as e:
+            # print("You are not entering the connrect information. Please try again!")
+            print(e)
     else:
         print("Your command is not supported")
 
