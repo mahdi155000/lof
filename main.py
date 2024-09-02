@@ -102,10 +102,10 @@ while True:
             # print(e)
     else:
         print("Your command is not supported")
-
+    workspace = 'lof'
     M_L = []
-    backend.fill_list(backend.view())
-    M_L = backend.view()
+    backend.fill_list(backend.view(workspace))
+    M_L = backend.view(workspace)
     try:
         print(M_L[lNumber - 1])
     except NameError:
