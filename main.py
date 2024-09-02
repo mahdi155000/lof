@@ -54,7 +54,6 @@ import_plugins()
 
 
 M_L = []
-
 fill_list(backend.view())
 print("---------------------------------------------")
 print(M_L)

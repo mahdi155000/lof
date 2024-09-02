@@ -8,7 +8,6 @@ if os.path.dirname(__file__) == '':
 else:
     PATH = os.path.dirname(__file__)
     PATH = PATH + os.path.sep
-
 current_workspace = 'lof'
 
 def create_tables():
@@ -98,6 +97,10 @@ def update_id(last_id, new_id, workspace='lof'):
     conn.commit()
     conn.close()
 
+M_L = []
+def fill_list(loff):
+    for work in loff:
+        M_L.insert(10000, work)
 
 connect()
 # print(view())
