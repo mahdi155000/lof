@@ -1,17 +1,12 @@
-from plugin import plugin
+from plugin import plugin, register_help
 from Asset import backend
 import termcolor2
 
-M_L = []
-# This is for now I'll we fix this repeat lately
-def fill_list(loff):
-    for work in loff:
-        M_L.insert(10000, work)
 
-        
+@register_help
 @plugin("add")
 def add_function():
-    fill_list(backend.view())
+    """This function will add a new title into program database"""
     M_L = backend.view()
     add_title = input("Enter Title: ")
     add_value = input("Input Value: ")

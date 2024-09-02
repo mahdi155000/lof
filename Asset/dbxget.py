@@ -83,10 +83,10 @@ def dropbox_upload_file(local_path, local_file, dropbox_file_path):
         local_file_path = pathlib.Path(local_path) / local_file
 
         with local_file_path.open("rb") as f:
-            meta = dbx.files_upload(f.read(), dropbox_file_path, mode=dropbox.files.WriteMode("overwrite"))
+            meta = dbx.files_upload(
+                f.read(), dropbox_file_path, mode=dropbox.files.WriteMode("overwrite"))
 
             return meta
     except Exception as e:
         print('Error uploading file to Dropbox: ' + str(e))
         raise print("I can't upload to dropbox.")
-

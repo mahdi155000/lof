@@ -2,16 +2,13 @@ from plugin import plugin
 from Asset import backend
 import termcolor2
 
-M_L = []
-def fill_list(loff):
-    for work in loff:
-        M_L.insert(10000, work)
-fill_list(backend.view())
 
-        
 @plugin("update")
 def update_function():
-    item_you_want_to_update = int(input(f"Enter {termcolor2.colored('number', 'yellow')} you want to update: ")) - 1
+    backend.fill_list(backend.view())
+    item_you_want_to_update = int(input(
+        f"Enter {termcolor2.colored('number', 'yellow')} you want to update: ")) - 1
+    M_L = backend.view()
     items = M_L[item_you_want_to_update]
     updated_title = input("Enter new title: ")
     updated_value = input("Enter new value: ")
@@ -29,5 +26,5 @@ def update_function():
     if updated_comment == '':
         updated_comment = items[4]
         print(items[4])
-    backend.update(items[0], updated_title, updated_value, updated_constant, updated_comment)
-    
+    backend.update(items[0], updated_title, updated_value,
+                   updated_constant, updated_comment)

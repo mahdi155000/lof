@@ -1,16 +1,14 @@
-#                       IN THE NAME OF GOD
+""" In the name of GOD """
 import os
-import sqlite3
-import os
-# from Asset import plugins
-from Asset import backend
-import termcolor2, pyfiglet
+import sys
 import importlib
-from Asset.plugins import exit_list 
+import termcolor2
+import pyfiglet
+from Asset import backend
+from Asset.plugins import exit_list
 from plugin import plugins
 
-            
-    
+
 if os.name == 'nt':
     os.system('color')
 print(termcolor2.colored(pyfiglet.figlet_format("IN THE NAME OF GOD"), 'red'))
@@ -21,16 +19,18 @@ else:
     PATH = os.path.dirname(__file__)
     PATH = PATH + os.path.sep
 
-encrypted_database = False
+ENCRYPTED_DATABASE = False
 if os.path.isfile(PATH + f"Asset{os.sep}config.py"):
-    from Asset import config
+    from Asset import config  # pylint: disable = E0611,C0412
 
-    encrypted_database = True
+    ENCRYPTED_DATABASE = True
     if os.path.isfile(PATH + f"Asset{os.sep}list_of_work.db.gpg"):
         config.decrypt()
 
+
 def import_plugins():
-    plugins = {}
+    """Import all plugins exist in Asset/plugins folder and get program access to them"""
+    plugins = {}  # pylint: disable=W0621
     # the plugins directory path
     plugins_dir = "Asset.plugins"  # change to directory
 
@@ -38,95 +38,77 @@ def import_plugins():
     for filename in os.listdir(f"{PATH}Asset{os.sep}plugins"):  # directory path
         if filename.endswith(".py") and filename != "__init__.py":
             module_name = filename[:-3]  # remove '.py' part from the name
-            module = importlib.import_module(f'{plugins_dir}.{module_name}')  # استفاده از نام بسته
-            plugins[module_name] = module 
+            module = importlib.import_module(
+                f'{plugins_dir}.{module_name}')  # استفاده از نام بسته
+            plugins[module_name] = module
     return plugins
 
-def plus(item):
-    M_L[item - 1][2] += 1
-
-
-def fill_list(loff):
-    for work in loff:
-        M_L.insert(10000, work)
-
-
-def new_show(do_what='plus'):
-    id_counter = 1
-    for item in M_L:
-        if item[0] % 2:
-            show_color = 'blue'
-        else:
-            show_color = 'red'
-        if item[0] < 10:
-            text = (" {:<1}) for {} one {:<45} {}".format(id_counter, do_what, item[1], item[2]))
-        else:
-            text = ("{:<1}) for {} one {:<45} {}".format(id_counter, do_what, item[1], item[2]))
-        print(termcolor2.colored(text, show_color))
-        id_counter += 1
-
-M_L = []
-
-fill_list(backend.view())
-print("---------------------------------------------")
-print(M_L)
-print("---------------------------------------------")
-work_counter = 1
-new_show()
 
 import_plugins()
 
+
+M_L = []
+backend.fill_list(backend.view())
+M_L = backend.view()
+print("---------------------------------------------")
+print(M_L)
+print("---------------------------------------------")
+plugins["show"]()
+
+
 while True:
     what_to_do = input("->:\n").lower()
-    INT_check_var = False
+    int_check_var = False  # pylint: disable=invalid-name
     try:
-        if type(int(what_to_do)) == int:
+        if isinstance(int(what_to_do), int):
             try:
                 lNumber = int(what_to_do)
                 if lNumber >= 0:
-                    addNumber = 1
+                    add_number = 1  # pylint: disable=invalid-name
                     li = M_L[lNumber - 1]
-                    backend.update(li[0], title=li[1], value=int(li[2]) + addNumber, constant=li[3], comment=li[4])
+                    backend.update(li[0], title=li[1], value=int(li[2])
+                                   + add_number, constant=li[3], comment=li[4])
                     # M_L[lNumber - 1][2] += 1
                 elif lNumber < 0:
                     lNumber = abs(lNumber)
-                    addNumber = -1
+                    add_number = -1  # pylint: disable=invalid-name
                     li = M_L[lNumber - 1]
-                    backend.update(li[0], title=li[1], value=int(li[2]) + addNumber, constant=li[3], comment=li[4])
+                    backend.update(li[0], title=li[1], value=int(li[2])
+                                   + add_number, constant=li[3], comment=li[4])
                     # M_L[lNumber - 1][2] -= 1
-                INT_check_var = True
-            except Exception as e:
-                print("Your input number not in range")
-    except Exception as e:
+                int_check_var = True  # pylint: disable=invalid-name
+            except IndexError:
+                print("Your input number is out of range")
+    except ValueError as e:
         # print(e)
         pass
-    if INT_check_var:
+    if int_check_var:
         pass
     elif what_to_do in exit_list:
-        if encrypted_database:
+        if ENCRYPTED_DATABASE:
             config.encrypt()
             os.remove(PATH + f"Asset{os.sep}list_of_work.db")
         elif not os.path.isfile(PATH + f"Asset{os.sep}list_of_work.db.gpg") and os.path.isfile(
                 PATH + f"Asset{os.sep}config.py"):
             config.encrypt()
-        exit(0)
-    elif what_to_do == "show":
-        new_show()
-    elif what_to_do == "show item":
-        from Asset import plugins
-
-        plugins.show_item()
+        sys.exit()
+    # elif what_to_do == "show":
+    #     new_show()
     elif what_to_do in plugins:
         try:
             plugins[what_to_do]()
-        except:
+        except KeyError:
             print("You are not entering the connrect information. Please try again!")
+            # print(e)
     else:
         print("Your command is not supported")
 
     M_L = []
-    fill_list(backend.view())
+    backend.fill_list(backend.view())
+    M_L = backend.view()
     try:
         print(M_L[lNumber - 1])
-    except Exception as e:
+    except NameError:
+        pass
+    except IndexError:
         pass
