@@ -19,6 +19,7 @@ def connect(workspace='lof'):
     conn.commit()
     conn.close()
 
+
 def switch_workspace(workspace_name):
     connection = sqlite3.connect(PATH + 'list_of_work.db')
     cursor = connection.cursor()
@@ -27,6 +28,7 @@ def switch_workspace(workspace_name):
     connect()
     connection.close()
 
+
 def delete_workspace(workspace_name):
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
@@ -34,10 +36,12 @@ def delete_workspace(workspace_name):
     conn.commit()
     conn.close()
 
+
 def insert(titile='', value='', constant='', comment='', workspace='lof'):
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
-    cur.execute(f"INSERT INTO {workspace} VALUES (NULL, ?, ?, ?, ?)", (titile, value, constant, comment))
+    cur.execute(f"INSERT INTO {workspace} VALUES (NULL, ?, ?, ?, ?)",
+                (titile, value, constant, comment))
     conn.commit()
     conn.close()
 
@@ -85,10 +89,14 @@ def update_id(last_id, new_id, workspace='lof'):
     conn.commit()
     conn.close()
 
+
 M_L = []
+
+
 def fill_list(loff):
     for work in loff:
         M_L.insert(10000, work)
+
 
 fill_list(view())
 M_L = view()

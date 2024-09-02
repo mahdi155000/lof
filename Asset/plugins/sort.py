@@ -1,6 +1,7 @@
 from plugin import plugin
 from Asset import backend
 
+
 @plugin("sort")
 def sort():
     backend.fill_list(backend.view())

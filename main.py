@@ -1,16 +1,13 @@
 #                       IN THE NAME OF GOD
 import os
-import sqlite3
-import os
-# from Asset import plugins
-from Asset import backend
-import termcolor2, pyfiglet
 import importlib
-from Asset.plugins import exit_list 
+from Asset import backend
+from Asset.plugins import exit_list
+import termcolor2
+import pyfiglet
 from plugin import plugins
 
-            
-    
+
 if os.name == 'nt':
     os.system('color')
 print(termcolor2.colored(pyfiglet.figlet_format("IN THE NAME OF GOD"), 'red'))
@@ -23,11 +20,12 @@ else:
 
 encrypted_database = False
 if os.path.isfile(PATH + f"Asset{os.sep}config.py"):
-    from Asset import config
+    from Asset import config  # pylint: disable = C0412
 
     encrypted_database = True
     if os.path.isfile(PATH + f"Asset{os.sep}list_of_work.db.gpg"):
         config.decrypt()
+
 
 def import_plugins():
     plugins = {}
@@ -38,9 +36,11 @@ def import_plugins():
     for filename in os.listdir(f"{PATH}Asset{os.sep}plugins"):  # directory path
         if filename.endswith(".py") and filename != "__init__.py":
             module_name = filename[:-3]  # remove '.py' part from the name
-            module = importlib.import_module(f'{plugins_dir}.{module_name}')  # استفاده از نام بسته
-            plugins[module_name] = module 
+            module = importlib.import_module(
+                f'{plugins_dir}.{module_name}')  # استفاده از نام بسته
+            plugins[module_name] = module
     return plugins
+
 
 def plus(item):
     M_L[item - 1][2] += 1
@@ -49,6 +49,7 @@ def plus(item):
 def fill_list(loff):
     for work in loff:
         M_L.insert(10000, work)
+
 
 import_plugins()
 
@@ -72,13 +73,15 @@ while True:
                 if lNumber >= 0:
                     addNumber = 1
                     li = M_L[lNumber - 1]
-                    backend.update(li[0], title=li[1], value=int(li[2]) + addNumber, constant=li[3], comment=li[4])
+                    backend.update(li[0], title=li[1], value=int(li[2])
+                                   + addNumber, constant=li[3], comment=li[4])
                     # M_L[lNumber - 1][2] += 1
                 elif lNumber < 0:
                     lNumber = abs(lNumber)
                     addNumber = -1
                     li = M_L[lNumber - 1]
-                    backend.update(li[0], title=li[1], value=int(li[2]) + addNumber, constant=li[3], comment=li[4])
+                    backend.update(li[0], title=li[1], value=int(li[2])
+                                   + addNumber, constant=li[3], comment=li[4])
                     # M_L[lNumber - 1][2] -= 1
                 INT_check_var = True
             except Exception as e:
@@ -101,7 +104,7 @@ while True:
     elif what_to_do in plugins:
         try:
             plugins[what_to_do]()
-        except :
+        except:
             print("You are not entering the connrect information. Please try again!")
             # print(e)
     else:

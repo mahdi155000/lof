@@ -3,7 +3,6 @@ from Asset import backend
 import termcolor2
 
 
-        
 @register_help
 @plugin("add")
 def add_function():
