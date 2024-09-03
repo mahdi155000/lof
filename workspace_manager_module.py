@@ -1,6 +1,6 @@
 class WorkspaceManager:
     def __init__(self):
-        self.current_workspace = 'default'
+        self.current_workspace = 'lof'
 
     def switch_workspace(self, new_workspace):
         self.current_workspace = new_workspace

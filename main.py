@@ -28,7 +28,7 @@ if os.path.isfile(PATH + f"Asset{os.sep}config.py"):
     if os.path.isfile(PATH + f"Asset{os.sep}list_of_work.db.gpg"):
         config.decrypt()
 
-workspace_manager.switch_workspace('watched_movie')
+workspace_manager.switch_workspace('lof')
 
 
 def import_plugins():
@@ -60,7 +60,10 @@ plugins["show"]()
 
 
 while True:
-    what_to_do = input("->:\n").lower()
+    try:
+        what_to_do = input("->:\n").lower()
+    except KeyboardInterrupt:
+        print("for exit the program please type 'exit'")
     int_check_var = False  # pylint: disable=invalid-name
     current_workspace = workspace_manager.get_workspace()  # Get the current workspace
     try:
@@ -83,11 +86,15 @@ while True:
                 int_check_var = True  # pylint: disable=invalid-name
             except IndexError:
                 print("Your input number is out of range")
+    except NameError:
+        pass
     except ValueError as e:
         # print(e)
         pass
     if int_check_var:
         pass
+    elif "what_to_do" not in globals():
+        continue
     elif what_to_do in exit_list:
         if ENCRYPTED_DATABASE:
             config.encrypt()
@@ -104,12 +111,17 @@ while True:
         except KeyError:
             print("You are not entering the connrect information. Please try again!")
             # print(e)
+        except KeyboardInterrupt:
+            print("for exit the program please type 'exit'")
     else:
         print("Your command is not supported")
     M_L = []
     # Use the workspace variable from the manager
-    backend.fill_list(backend.view(workspace_manager.current_workspace))
-    M_L = backend.view(workspace_manager.current_workspace)
+    try:
+        backend.fill_list(backend.view(workspace_manager.current_workspace))
+        M_L = backend.view(workspace_manager.current_workspace)
+    except Exception:
+        pass
     # try:
     #     print(M_L[lNumber - 1])
     # except NameError:

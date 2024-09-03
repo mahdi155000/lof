@@ -8,10 +8,10 @@ if os.path.dirname(__file__) == '':
 else:
     PATH = os.path.dirname(__file__)
     PATH = PATH + os.path.sep
-current_workspace = None
+current_workspace = workspace_manager.current_workspace
 
 
-def connect(workspace=None):
+def connect(workspace=current_workspace):
     """Make a connection between database and program"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()

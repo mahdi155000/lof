@@ -15,9 +15,12 @@ def switch_branches():
     # print(backend.view(new_workspace))
     # backend.fill_list(backend.view(new_workspace))
     # M_L = backend.view(new_workspace)
-    workspace = input("->: ")
-    workspace_manager.switch_workspace(workspace)
-    backend.switch_workspace(workspace_manager.current_workspace)
-    print(backend.view(workspace_manager.current_workspace))
-    backend.fill_list(backend.view(workspace_manager.current_workspace))
-    M_L = backend.view(workspace_manager.current_workspace)
+    try:
+        workspace = input("    ->: ")
+        workspace_manager.switch_workspace(workspace)
+        backend.switch_workspace(workspace_manager.current_workspace)
+        print(backend.view(workspace_manager.current_workspace))
+        backend.fill_list(backend.view(workspace_manager.current_workspace))
+        M_L = backend.view(workspace_manager.current_workspace)
+    except Exception:
+        print("please choose between your options")
