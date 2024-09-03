@@ -61,8 +61,8 @@ while True:
         # Attempt to get the user input
         what_to_do = input("->:\n").lower()
     except KeyboardInterrupt:
-        print("\nKeyboardInterrupt detected. OK I will exit the program.")
-        break
+        print("\nOK I will exit the program.")
+        sys.exit()
 
     int_check_var = False  # pylint: disable=invalid-name
     current_workspace = workspace_manager.get_workspace()  # Get the current workspace
