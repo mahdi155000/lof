@@ -9,7 +9,6 @@ from Asset.plugins import exit_list
 from plugin import plugins
 from workspace_manager_module import workspace_manager
 
-
 if os.name == 'nt':
     os.system('color')
 print(termcolor2.colored(pyfiglet.figlet_format("IN THE NAME OF GOD"), 'red'))
@@ -42,13 +41,12 @@ def import_plugins():
         if filename.endswith(".py") and filename != "__init__.py":
             module_name = filename[:-3]  # remove '.py' part from the name
             module = importlib.import_module(
-                f'{plugins_dir}.{module_name}')  # استفاده از نام بسته
+                f'{plugins_dir}.{module_name}')  # use module name
             plugins[module_name] = module
     return plugins
 
 
 import_plugins()
-
 
 M_L = []
 backend.fill_list(backend.view(workspace_manager.current_workspace))
@@ -58,39 +56,41 @@ print(M_L)
 print("---------------------------------------------")
 plugins["show"]()
 
-
 while True:
     try:
+        # Attempt to get the user input
         what_to_do = input("->:\n").lower()
     except KeyboardInterrupt:
-        print("for exit the program please type 'exit'")
+        print("\nKeyboardInterrupt detected. To exit the program, type 'exit'.")
+        continue  # Continue to the next iteration of the loop
+
     int_check_var = False  # pylint: disable=invalid-name
     current_workspace = workspace_manager.get_workspace()  # Get the current workspace
+
     try:
-        if isinstance(int(what_to_do), int):
-            try:
-                lNumber = int(what_to_do)
-                if lNumber >= 0:
-                    add_number = 1  # pylint: disable=invalid-name
-                    li = M_L[lNumber - 1]
-                    backend.update(li[0], title=li[1], value=(
-                        int(li[2]) + add_number), constant=li[3], comment=li[4], workspace=workspace_manager.current_workspace)
-                    # M_L[lNumber - 1][2] += 1
-                elif lNumber < 0:
-                    lNumber = abs(lNumber)
-                    add_number = -1  # pylint: disable=invalid-name
-                    li = M_L[lNumber - 1]
-                    backend.update(li[0], title=li[1], value=(
-                        int(li[2]) + add_number), constant=li[3], comment=li[4], workspace=workspace_manager.current_workspace)
-                    # M_L[lNumber - 1][2] -= 1
-                int_check_var = True  # pylint: disable=invalid-name
-            except IndexError:
-                print("Your input number is out of range")
-    except NameError:
-        pass
-    except ValueError as e:
-        # print(e)
-        pass
+        if what_to_do.isdigit():
+            lNumber = int(what_to_do)
+            if lNumber >= 0:
+                add_number = 1  # pylint: disable=invalid-name
+                li = M_L[lNumber - 1]
+                backend.update(li[0], title=li[1], value=(int(li[2]) + add_number),
+                               constant=li[3], comment=li[4], workspace=workspace_manager.current_workspace)
+                # M_L[lNumber - 1][2] += 1
+            elif lNumber < 0:
+                lNumber = abs(lNumber)
+                add_number = -1  # pylint: disable=invalid-name
+                li = M_L[lNumber - 1]
+                backend.update(li[0], title=li[1], value=(int(li[2]) + add_number),
+                               constant=li[3], comment=li[4], workspace=workspace_manager.current_workspace)
+                # M_L[lNumber - 1][2] -= 1
+            int_check_var = True  # pylint: disable=invalid-name
+        else:
+            print("Input must be a number.")
+    except IndexError:
+        print("Your input number is out of range")
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+
     if int_check_var:
         pass
     elif "what_to_do" not in globals():
@@ -99,8 +99,7 @@ while True:
         if ENCRYPTED_DATABASE:
             config.encrypt()
             os.remove(PATH + f"Asset{os.sep}list_of_work.db")
-        elif not os.path.isfile(PATH + f"Asset{os.sep}list_of_work.db.gpg") and os.path.isfile(
-                PATH + f"Asset{os.sep}config.py"):
+        elif not os.path.isfile(PATH + f"Asset{os.sep}list_of_work.db.gpg") and os.path.isfile(PATH + f"Asset{os.sep}config.py"):
             config.encrypt()
         sys.exit()
     # elif what_to_do == "show":
@@ -109,22 +108,16 @@ while True:
         try:
             plugins[what_to_do]()
         except KeyError:
-            print("You are not entering the connrect information. Please try again!")
+            print("You are not entering the correct information. Please try again!")
             # print(e)
         except KeyboardInterrupt:
-            print("for exit the program please type 'exit'")
+            print("\nKeyboardInterrupt detected. To exit the program, type 'exit'.")
     else:
         print("Your command is not supported")
-    M_L = []
-    # Use the workspace variable from the manager
+
+    # Refresh M_L with the current workspace data
     try:
         backend.fill_list(backend.view(workspace_manager.current_workspace))
         M_L = backend.view(workspace_manager.current_workspace)
-    except Exception:
-        pass
-    # try:
-    #     print(M_L[lNumber - 1])
-    # except NameError:
-    #     pass
-    # except IndexError:
-    #     pass
+    except Exception as e:
+        print(f"An error occurred: {e}")
