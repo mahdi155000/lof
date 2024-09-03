@@ -7,6 +7,7 @@ import pyfiglet
 from Asset import backend
 from Asset.plugins import exit_list
 from plugin import plugins
+from workspace_manager_module import workspace_manager
 
 
 if os.name == 'nt':
@@ -26,6 +27,8 @@ if os.path.isfile(PATH + f"Asset{os.sep}config.py"):
     ENCRYPTED_DATABASE = True
     if os.path.isfile(PATH + f"Asset{os.sep}list_of_work.db.gpg"):
         config.decrypt()
+
+workspace_manager.switch_workspace('lof')
 
 
 def import_plugins():
@@ -59,6 +62,7 @@ plugins["show"]()
 while True:
     what_to_do = input("->:\n").lower()
     int_check_var = False  # pylint: disable=invalid-name
+    current_workspace = workspace_manager.get_workspace()  # Get the current workspace
     try:
         if isinstance(int(what_to_do), int):
             try:
@@ -102,10 +106,10 @@ while True:
             # print(e)
     else:
         print("Your command is not supported")
-    workspace = 'lof'
     M_L = []
-    backend.fill_list(backend.view(workspace))
-    M_L = backend.view(workspace)
+    # Use the workspace variable from the manager
+    backend.fill_list(backend.view(current_workspace))
+    M_L = backend.view(current_workspace)
     try:
         print(M_L[lNumber - 1])
     except NameError:
