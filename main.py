@@ -61,8 +61,8 @@ while True:
         # Attempt to get the user input
         what_to_do = input("->:\n").lower()
     except KeyboardInterrupt:
-        print("\nKeyboardInterrupt detected. To exit the program, type 'exit'.")
-        continue  # Continue to the next iteration of the loop
+        print("\nKeyboardInterrupt detected. OK I will exit the program.")
+        break
 
     int_check_var = False  # pylint: disable=invalid-name
     current_workspace = workspace_manager.get_workspace()  # Get the current workspace
@@ -111,7 +111,8 @@ while True:
             print("You are not entering the correct information. Please try again!")
             # print(e)
         except KeyboardInterrupt:
-            print("\nKeyboardInterrupt detected. To exit the program, type 'exit'.")
+            print("\nKeyboardInterrupt detected. OK I will exit the program.")
+            sys.exit()
     else:
         print("Your command is not supported")
 
