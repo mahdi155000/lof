@@ -20,3 +20,4 @@ def switch_branches():
     backend.switch_workspace(workspace_manager.current_workspace)
     print(backend.view(workspace_manager.current_workspace))
     backend.fill_list(backend.view(workspace_manager.current_workspace))
+    M_L = backend.view(workspace_manager.current_workspace)

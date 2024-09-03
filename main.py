@@ -28,7 +28,7 @@ if os.path.isfile(PATH + f"Asset{os.sep}config.py"):
     if os.path.isfile(PATH + f"Asset{os.sep}list_of_work.db.gpg"):
         config.decrypt()
 
-workspace_manager.switch_workspace('lof')
+workspace_manager.switch_workspace('watched_movie')
 
 
 def import_plugins():
@@ -51,8 +51,8 @@ import_plugins()
 
 
 M_L = []
-backend.fill_list(backend.view())
-M_L = backend.view()
+backend.fill_list(backend.view(workspace_manager.current_workspace))
+M_L = backend.view(workspace_manager.current_workspace)
 print("---------------------------------------------")
 print(M_L)
 print("---------------------------------------------")
@@ -70,15 +70,15 @@ while True:
                 if lNumber >= 0:
                     add_number = 1  # pylint: disable=invalid-name
                     li = M_L[lNumber - 1]
-                    backend.update(li[0], title=li[1], value=int(li[2])
-                                   + add_number, constant=li[3], comment=li[4])
+                    backend.update(li[0], title=li[1], value=(
+                        int(li[2]) + add_number), constant=li[3], comment=li[4], workspace=workspace_manager.current_workspace)
                     # M_L[lNumber - 1][2] += 1
                 elif lNumber < 0:
                     lNumber = abs(lNumber)
                     add_number = -1  # pylint: disable=invalid-name
                     li = M_L[lNumber - 1]
-                    backend.update(li[0], title=li[1], value=int(li[2])
-                                   + add_number, constant=li[3], comment=li[4])
+                    backend.update(li[0], title=li[1], value=(
+                        int(li[2]) + add_number), constant=li[3], comment=li[4], workspace=workspace_manager.current_workspace)
                     # M_L[lNumber - 1][2] -= 1
                 int_check_var = True  # pylint: disable=invalid-name
             except IndexError:
@@ -108,11 +108,11 @@ while True:
         print("Your command is not supported")
     M_L = []
     # Use the workspace variable from the manager
-    backend.fill_list(backend.view(current_workspace))
-    M_L = backend.view(current_workspace)
-    try:
-        print(M_L[lNumber - 1])
-    except NameError:
-        pass
-    except IndexError:
-        pass
+    backend.fill_list(backend.view(workspace_manager.current_workspace))
+    M_L = backend.view(workspace_manager.current_workspace)
+    # try:
+    #     print(M_L[lNumber - 1])
+    # except NameError:
+    #     pass
+    # except IndexError:
+    #     pass

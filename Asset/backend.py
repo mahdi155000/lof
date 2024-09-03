@@ -1,16 +1,17 @@
 #               IN THE NAME OF GOD
 import os
 import sqlite3
+from workspace_manager_module import workspace_manager
 
 if os.path.dirname(__file__) == '':
     PATH = '.' + os.path.sep
 else:
     PATH = os.path.dirname(__file__)
     PATH = PATH + os.path.sep
-current_workspace = 'lof'
+current_workspace = None
 
 
-def connect(workspace='lof'):
+def connect(workspace=None):
     """Make a connection between database and program"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
@@ -25,7 +26,7 @@ def switch_workspace(workspace_name):
     """change between database table."""
     connection = sqlite3.connect(PATH + 'list_of_work.db')
     global current_workspace
-    current_workspace = workspace_name
+    current_workspace = None
     connect()
     connection.close()
 
@@ -63,7 +64,7 @@ def delete_workspace(workspace_name):
     conn.close()
 
 
-def insert(titile='', value='', constant='', comment='', workspace='lof'):
+def insert(titile='', value='', constant='', comment='', workspace=None):
     """Insert a new row on database"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
@@ -73,7 +74,7 @@ def insert(titile='', value='', constant='', comment='', workspace='lof'):
     conn.close()
 
 
-def view(workspace="lof"):
+def view(workspace='lof'):
     """Will show database data"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
@@ -83,7 +84,7 @@ def view(workspace="lof"):
     return row
 
 
-def search(title, value, comment, constant, workspace='lof'):
+def search(title, value, comment, constant, workspace=None):
     """search between database data"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
@@ -94,7 +95,7 @@ def search(title, value, comment, constant, workspace='lof'):
     return row
 
 
-def delete(id, workspace='lof'):  # pylint: disable=redefined-builtin,invalid-name
+def delete(id, workspace=None):  # pylint: disable=redefined-builtin,invalid-name
     """remove a row from database"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
@@ -104,7 +105,7 @@ def delete(id, workspace='lof'):  # pylint: disable=redefined-builtin,invalid-na
 
 
 def update(id, title='',  # pylint: disable=redefined-builtin,too-many-arguments,invalid-name
-           value='', constant='', comment='', workspace='lof'):
+           value='', constant='', comment='', workspace=None):
     """update a row information"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
@@ -114,7 +115,7 @@ def update(id, title='',  # pylint: disable=redefined-builtin,too-many-arguments
     conn.close()
 
 
-def update_id(last_id, new_id, workspace='lof'):
+def update_id(last_id, new_id, workspace=None):
     """will update only the ID of row"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
