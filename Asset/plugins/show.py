@@ -1,11 +1,12 @@
 from plugin import plugin
 from Asset import backend
 import termcolor2
+from workspace_manager_module import workspace_manager
 
 
 @plugin("show")
 def show_function(do_what='plus'):
-    M_L = backend.view()
+    M_L = backend.view(workspace_manager.current_workspace)
     id_counter = 1
     for item in M_L:
         if item[0] % 2:

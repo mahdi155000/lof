@@ -1,35 +1,62 @@
 #               IN THE NAME OF GOD
 import os
 import sqlite3
-import shutil
+from workspace_manager_module import workspace_manager
 
 if os.path.dirname(__file__) == '':
     PATH = '.' + os.path.sep
 else:
     PATH = os.path.dirname(__file__)
     PATH = PATH + os.path.sep
-current_workspace = 'lof'
+current_workspace = workspace_manager.current_workspace
 
 
-def connect(workspace='lof'):
+def connect(workspace=current_workspace):
+    """Make a connection between database and program"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
     cur.execute(
-        f"CREATE TABLE IF NOT EXISTS {workspace}(id INTEGER PRIMARY KEY, title TEXT, value BLOB, constant text, comment TEXT)")
+        f"""CREATE TABLE IF NOT EXISTS {workspace}(id INTEGER PRIMARY KEY, title 
+        TEXT, value BLOB, constant text, comment TEXT)""")
     conn.commit()
     conn.close()
 
 
 def switch_workspace(workspace_name):
+    """change between database table."""
     connection = sqlite3.connect(PATH + 'list_of_work.db')
-    cursor = connection.cursor()
     global current_workspace
-    current_workspace = workspace_name
+    current_workspace = None
     connect()
     connection.close()
 
 
+def list_tables():
+    """
+    Returns a list of all table names in the specified SQLite database.
+
+    :param db_path: Path to the SQLite database file
+    :return: List of table names
+    """
+    # Connect to the SQLite database
+    conn = sqlite3.connect(PATH + "list_of_work.db")
+    cur = conn.cursor()
+
+    # Execute SQL command to get all table names
+    cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
+
+    # Fetch all results
+    tables = cur.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    # Convert results to a simple list of table names
+    return [table[0] for table in tables]
+
+
 def delete_workspace(workspace_name):
+    """Remove a table from databae"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
     cur.execute(f'DROP TABLE IF EXISTS {workspace_name}')
@@ -37,7 +64,8 @@ def delete_workspace(workspace_name):
     conn.close()
 
 
-def insert(titile='', value='', constant='', comment='', workspace='lof'):
+def insert(titile='', value='', constant='', comment='', workspace=None):
+    """Insert a new row on database"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
     cur.execute(f"INSERT INTO {workspace} VALUES (NULL, ?, ?, ?, ?)",
@@ -46,7 +74,8 @@ def insert(titile='', value='', constant='', comment='', workspace='lof'):
     conn.close()
 
 
-def view(workspace="lof"):
+def view(workspace='lof'):
+    """Will show database data"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
     cur.execute(f"SELECT * FROM {workspace}")
@@ -55,7 +84,8 @@ def view(workspace="lof"):
     return row
 
 
-def search(title, value, comment, constant, workspace='lof'):
+def search(title, value, comment, constant, workspace=None):
+    """search between database data"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
     cur.execute(f"SELECT * FROM {workspace} WHERE title=? OR value=? OR constant=? OR comment=?",
@@ -65,7 +95,8 @@ def search(title, value, comment, constant, workspace='lof'):
     return row
 
 
-def delete(id, workspace='lof'):
+def delete(id, workspace=None):  # pylint: disable=redefined-builtin,invalid-name
+    """remove a row from database"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
     cur.execute(f"DELETE FROM {workspace} WHERE id=?", (id,))
@@ -73,7 +104,9 @@ def delete(id, workspace='lof'):
     conn.close()
 
 
-def update(id, title='', value='', constant='', comment='', workspace='lof'):
+def update(id, title='',  # pylint: disable=redefined-builtin,too-many-arguments,invalid-name
+           value='', constant='', comment='', workspace=None):
+    """update a row information"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
     cur.execute(f"UPDATE {workspace} SET  title=?, value=?, constant=?, comment=? WHERE id=?",
@@ -82,7 +115,8 @@ def update(id, title='', value='', constant='', comment='', workspace='lof'):
     conn.close()
 
 
-def update_id(last_id, new_id, workspace='lof'):
+def update_id(last_id, new_id, workspace=None):
+    """will update only the ID of row"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
     cur.execute(f"UPDATE {workspace} SET id=? WHERE id=?", (new_id, last_id))
@@ -94,6 +128,7 @@ M_L = []
 
 
 def fill_list(loff):
+    """Import all data from database into program"""
     for work in loff:
         M_L.insert(10000, work)
 

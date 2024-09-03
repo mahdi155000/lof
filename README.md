@@ -47,6 +47,7 @@ I highly recommend setting up a Python virtual environment.
   ```bash
   python3 -m virtualenv .env
   source ./.env/bin/activate
+  pip install -r requirement.txt
 ```
 3. Run the main file:
   ```bash
