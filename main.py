@@ -126,8 +126,21 @@ while True:
         except KeyboardInterrupt:
             print("\nKeyboardInterrupt detected. OK I will exit switching mode.")
             continue
+    elif what_to_do.split()[0] in plugins:
+        main_command = what_to_do.split()[0]
+        sub_command = what_to_do.split()[1] if len(
+            what_to_do.split()) > 1 else None
+
+        if sub_command and sub_command in plugins[main_command]:
+            plugins[main_command][sub_command]()
+        else:
+            print(f"Invalid subcommand: {sub_command}")
     else:
-        print("Your command is not supported")
+        try:
+            pass
+        except Exception as e:
+            print(e)
+            print("Your command is not supported")
 
     # Refresh M_L with the current workspace data
     try:
