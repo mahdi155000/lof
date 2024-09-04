@@ -107,6 +107,17 @@ while True:
     elif what_to_do in plugins:
         try:
             plugins[what_to_do]()
+        except TypeError:
+            command = what_to_do.strip().split()
+            main_command = command[0]
+            sub_command = command[1] if len(command) > 1 else None
+
+            if main_command in plugins:
+                if sub_command and sub_command in plugins[main_command]:
+                    plugins[main_command][sub_command]()
+                else:
+                    print(
+                        f"Subcommands for {main_command}: {', '.join(plugins[main_command].keys())}")
         except KeyError:
             print("You are not entering the correct information. Please try again!")
             # print(e)
