@@ -5,7 +5,7 @@ there is also avalaible in [gitlab](https://gitlab.com/mahdi155000/lof).
 python main.py
 ```
 
-~~This project is out of the side and switch to __nlof__, and will be avaiable on my github and gitlab son.~~
+~~This project has been deprecated in favor of 'nlof' and will soon be awailable on my GitHub and Gitlab.~~
 
 # Project Title
 
