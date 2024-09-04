@@ -1,4 +1,13 @@
-plugins = {}
+from Asset.plugins import branch
+plugins = {
+    'branch': {
+        'add': branch.add,
+        'remove': branch.remove,
+        'rename': branch.rename,
+        # سایر زیرشاخه‌ها
+    },
+    # سایر پلاگین‌ها
+}
 
 
 def plugin(name):

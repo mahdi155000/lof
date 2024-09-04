@@ -85,7 +85,7 @@ while True:
                 # M_L[lNumber - 1][2] -= 1
             int_check_var = True  # pylint: disable=invalid-name
         else:
-            print("Input must be a number.")
+            pass
     except IndexError:
         print("Your input number is out of range")
     except ValueError:
@@ -107,12 +107,25 @@ while True:
     elif what_to_do in plugins:
         try:
             plugins[what_to_do]()
+        except TypeError:
+            command = what_to_do.strip().split()
+            main_command = command[0]
+            sub_command = command[1] if len(command) > 1 else None
+
+            if main_command in plugins:
+                if sub_command and sub_command in plugins[main_command]:
+                    plugins[main_command][sub_command]()
+                else:
+                    print(
+                        f"Subcommands for {main_command}: {', '.join(plugins[main_command].keys())}")
+            else:
+                print("Command not found!")
         except KeyError:
             print("You are not entering the correct information. Please try again!")
             # print(e)
         except KeyboardInterrupt:
-            print("\nKeyboardInterrupt detected. OK I will exit the program.")
-            sys.exit()
+            print("\nKeyboardInterrupt detected. OK I will exit switching mode.")
+            continue
     else:
         print("Your command is not supported")
 
