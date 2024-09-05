@@ -143,6 +143,19 @@ def update_id(last_id, new_id, workspace=None):
     conn.close()
 
 
+def move_data(current_branch, newbranch, id):
+    conn = sqlite3.connect(PATH + "list_of_work.db")
+    cur = conn.cursor()
+    cur.execute(
+        f"""INSERT INTO {newbranch} (id, title, value, constant, comment)
+SELECT id, title, value, constant, comment
+FROM {current_branch}
+WHERE id = ?""", (id,))
+    cur.execute(f"DELETE FROM {current_branch} WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+
+
 M_L = []
 
 

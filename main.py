@@ -118,8 +118,9 @@ while True:
                 else:
                     print(
                         f"Subcommands for {main_command}: {', '.join(plugins[main_command].keys())}")
-        except KeyError:
+        except KeyError as e:
             print("You are not entering the correct information. Please try again!")
+            print(e)
             # print(e)
         except KeyboardInterrupt:
             print("\nKeyboardInterrupt detected. OK I will exit switching mode.")
