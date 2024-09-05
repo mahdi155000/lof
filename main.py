@@ -124,6 +124,18 @@ while True:
         except KeyboardInterrupt:
             print("\nKeyboardInterrupt detected. OK I will exit switching mode.")
             continue
+    # elif what_to_do.split()[0] in plugins:
+    #     try:
+    #         main_command = what_to_do.split()[0]
+    #         sub_command = what_to_do.split()[1] if len(
+    #             what_to_do.split()) > 1 else None
+
+    #         if sub_command and sub_command in plugins[main_command]:
+    #             plugins[main_command][sub_command]()
+    #         else:
+    #             print(f"Invalid subcommand: {sub_command}")
+    #     except:
+    #         print('issue from running subcommand. please report it to programmer')
     elif what_to_do.split()[0] in plugins:
         try:
             main_command = what_to_do.split()[0]
@@ -131,11 +143,11 @@ while True:
                 what_to_do.split()) > 1 else None
 
             if sub_command and sub_command in plugins[main_command]:
-                plugins[main_command][sub_command]()
+                plugins[main_command][sub_command]()  # Run subcommand if valid
             else:
                 print(f"Invalid subcommand: {sub_command}")
         except:
-            print('issue from running subcommand. please report it to programmer')
+            print('Issue from running subcommand. Please report it to programmer.')
     else:
         print("Your command is not supported")
 
