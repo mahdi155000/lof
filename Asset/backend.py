@@ -147,7 +147,7 @@ def move_data(current_branch, newbranch, id):
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
     cur.execute(
-        f"""INSERT INTO {newbranch} (id, title, value, constant, comment)
+        f"""INSERT INTO {newbranch} (NULL, title, value, constant, comment)
 SELECT id, title, value, constant, comment
 FROM {current_branch}
 WHERE id = ?""", (id,))
