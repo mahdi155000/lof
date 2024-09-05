@@ -32,9 +32,16 @@ def remove_function():
 def rename():
     '''Change the name of a branch.'''
     list_function()
-    oldname = input("Please enter you branch to rename: ")
-    newname = input("Enter new name: ")
-    backend.reanme_workspace(oldname, newname)
+    try:
+        oldname = input("Please enter you branch to rename: ")
+        newname = input("Enter new name: ")
+        backend.reanme_workspace(oldname, newname)
+    except ValueError as e:
+        print(e)
+        print("please try again")
+    except Exception as e:
+        print("error acquired please report this to programmer")
+        print(e)
 
 
 @register_command('branch', 'list')
