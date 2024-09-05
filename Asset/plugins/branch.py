@@ -28,15 +28,18 @@ def remove_function():
             break
 
 
-# @register_command('branch', 'rename')
+@register_command('branch', 'rename')
 def rename():
     '''Change the name of a branch.'''
-    pass
+    list_function()
+    oldname = input("Please enter you branch to rename: ")
+    newname = input("Enter new name: ")
+    backend.reanme_workspace(oldname, newname)
 
 
-@register_command('branch' 'list')
+@register_command('branch', 'list')
 def list_function():
     '''This function will make list of all brnaches exist  in database'''
     print("The list of branches is: ")
     for i in backend.list_tables():
-        print(f'-> {i}\n')
+        print(f'-> {i}')

@@ -31,6 +31,25 @@ def switch_workspace(workspace_name):
     connection.close()
 
 
+def reanme_workspace(oldname, newname):
+    """changeing the name of tables
+
+    Args:
+        oldname (text): old branch name
+        newname (text): new name for branch
+    """
+    if oldname == 'lof':
+        raise ValueError(
+            "The 'lof' table cannot be renamed.\n if you want make you branch clear you have to do it manually")
+    conn = sqlite3.connect(PATH + "list_of_work.db")
+    cur = conn.cursor()
+    cur.execute(
+        f'ALTER TABLE {oldname} RENAME TO {newname}'
+    )
+    conn.commit()
+    conn.close()
+
+
 def list_tables():
     """
     Returns a list of all table names in the specified SQLite database.

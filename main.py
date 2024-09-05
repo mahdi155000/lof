@@ -146,8 +146,9 @@ while True:
                 plugins[main_command][sub_command]()  # Run subcommand if valid
             else:
                 print(f"Invalid subcommand: {sub_command}")
-        except:
+        except Exception as e:
             print('Issue from running subcommand. Please report it to programmer.')
+            print(e)
     else:
         print("Your command is not supported")
 
