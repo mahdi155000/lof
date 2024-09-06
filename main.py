@@ -93,6 +93,8 @@ while True:
 
     if int_check_var:
         pass
+    elif what_to_do == '':
+        pass
     elif "what_to_do" not in globals():
         continue
     elif what_to_do in exit_list:
