@@ -153,7 +153,10 @@ while True:
             print('Issue from running subcommand. Please report it to programmer.')
             print(e)
     else:
-        print("Your command is not supported")
+        try:
+            print("Your command is not supported")
+        except Exception as e:
+            print(e)
 
     # Refresh M_L with the current workspace data
     try:
