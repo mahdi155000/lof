@@ -66,6 +66,7 @@ while True:
 
     int_check_var = False  # pylint: disable=invalid-name
     current_workspace = workspace_manager.get_workspace()  # Get the current workspace
+    show_status = True
 
     try:
         if what_to_do.isdigit():
@@ -164,3 +165,9 @@ while True:
         M_L = backend.view(workspace_manager.current_workspace)
     except Exception as e:
         print(f"An error occurred: {e}")
+
+    try:
+        if show_status:
+            print(M_L[lNumber - 1])
+    except Exception as e:
+        pass

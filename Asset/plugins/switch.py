@@ -6,6 +6,7 @@ from workspace_manager_module import workspace_manager
 @plugin(f'switch')
 def switch_branches():
     """This function will change the current workspace with another"""
+    show_status = False
     print("Pleast select one of these workspaces: ")
     for table in backend.list_tables():
         print(f"-> {table}")
