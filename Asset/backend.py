@@ -165,6 +165,7 @@ def fill_list(loff):
         M_L.insert(10000, work)
 
 
+connect()
 fill_list(view())
 M_L = view()
 connect()
