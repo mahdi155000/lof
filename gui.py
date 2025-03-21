@@ -1,9 +1,9 @@
 import sys
 import importlib
-from PyQt6.QtWidgets import (
-    QApplication, QMainWindow,QPushButton, QVBoxLayout, QWidget, QLabel, QScrollArea, QGridLayout, QLineEdit)
+import tkinter as tk
+from tkinter import ttk
 from plugin import plugins
-import os
+import os 
 from workspace_manager_module import workspace_manager
 from Asset import backend
 
@@ -35,49 +35,30 @@ backend.fill_list(backend.view(workspace_manager.current_workspace))
 M_L = backend.view(workspace_manager.current_workspace)
 
 
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        
-        self.setWindowTitle("LOF Database Viewer")
-        self.setGeometry(100, 100, 600, 400)
+root = tk.Tk()
 
-        # Create a central widget and set it
-        central_widget = QWidget(self)
-        self.setCentralWidget(central_widget)
+root.title("lof project")
+# root.geometry('600x400+50+50')
+window_width = 600
+window_height = 400
 
-        # Create a layout for the central widget
-        layout = QVBoxLayout(central_widget)
+# get the screen dimension
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
 
-        # Add the search line to the layout
-        self.search_line(layout)
+# find the center point
+center_x = int(screen_width/2 - window_width / 2)
+center_y = int(screen_height/2 - window_height / 2)
 
-        self.button_test()
+# set the position of the window to the center of the screen
+root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
 
-    def search_line(self, layout):
-        search_box = QLineEdit(
-            self,
-            placeholderText="Enter something to search...",
-            clearButtonEnabled=True
-        )
-        layout.addWidget(search_box)
-    
-    def button_test(self):
-        layout = QVBoxLayout()
-        self.setLayout(layout)
-        titles = ['yes', 'no', 'cancel']
-        buttons = [QPushButton(titles) for title in titles]
-        for button in buttons:
-            layout.addWidget(button)
+# test new lable and new lable
+tk.Label(root, text="classic theme").pack()
+ttk.Label(root, text="new theme").pack()
 
-    def show_list(self):
-        try:
-            plugins['show']()
-        except Exception as e:
-            return [("Error", str(e))]
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec())
+
+
+
+root.mainloop()
