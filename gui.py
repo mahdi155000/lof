@@ -41,14 +41,12 @@ class Application(tk.Tk):
         self.title("Item Manager")
         self.geometry("400x300")
 
-        # Dictionary to hold items and their values
         self.items = self.load_items()
         self.filtered_items = self.items.copy()
 
         self.create_widgets()
 
     def create_widgets(self):
-        # Search section
         search_frame = ttk.Frame(self)
         search_frame.pack(pady=10)
         tk.Label(search_frame, text="Search:").pack(side=tk.LEFT)
@@ -56,31 +54,27 @@ class Application(tk.Tk):
         self.search_entry.pack(side=tk.LEFT, padx=5)
         self.search_entry.bind("<KeyRelease>", self.update_list)
 
-        # Items list
-        self.tree = ttk.Treeview(self, columns=("value", "action"), show="headings")
-        self.tree.heading("value", text="Value")
-        self.tree.heading("action", text="Action")
-        self.tree.pack(pady=10, fill=tk.BOTH, expand=True)
+        self.list_frame = ttk.Frame(self)
+        self.list_frame.pack(pady=10, fill=tk.BOTH, expand=True)
 
         self.update_list()
 
     def load_items(self):
-        # This function should be modified to load items from your project's data source
-        # For demonstration, we'll use a static dictionary
         return {"Item 1": 0, "Item 2": 0, "Item 3": 0, "Item 4": 0}
 
     def update_list(self, event=None):
         search_term = self.search_entry.get().lower()
         self.filtered_items = {k: v for k, v in self.items.items() if search_term in k.lower()}
 
-        # Clear current items in the list
-        for row in self.tree.get_children():
-            self.tree.delete(row)
+        for widget in self.list_frame.winfo_children():
+            widget.destroy()
 
-        # Add filtered items to the list
         for item, value in self.filtered_items.items():
-            self.tree.insert("", tk.END, values=(item, value, "Increment"), tags=(item,))
-            self.tree.tag_bind(item, "<Double-1>", lambda event, item=item: self.increment_item(item))
+            row_frame = ttk.Frame(self.list_frame)
+            row_frame.pack(fill=tk.X, padx=5, pady=2)
+
+            tk.Label(row_frame, text=f"{item}: {value}").pack(side=tk.LEFT, expand=True)
+            ttk.Button(row_frame, text="Increment", command=lambda i=item: self.increment_item(i)).pack(side=tk.RIGHT)
 
     def increment_item(self, item):
         self.items[item] += 1
