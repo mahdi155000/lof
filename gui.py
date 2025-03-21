@@ -35,30 +35,57 @@ backend.fill_list(backend.view(workspace_manager.current_workspace))
 M_L = backend.view(workspace_manager.current_workspace)
 
 
-root = tk.Tk()
+class Application(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Item Manager")
+        self.geometry("400x300")
 
-root.title("lof project")
-# root.geometry('600x400+50+50')
-window_width = 600
-window_height = 400
+        # Dictionary to hold items and their values
+        self.items = self.load_items()
+        self.filtered_items = self.items.copy()
 
-# get the screen dimension
-screen_width = root.winfo_screenwidth()
-screen_height = root.winfo_screenheight()
+        self.create_widgets()
 
-# find the center point
-center_x = int(screen_width/2 - window_width / 2)
-center_y = int(screen_height/2 - window_height / 2)
+    def create_widgets(self):
+        # Search section
+        search_frame = ttk.Frame(self)
+        search_frame.pack(pady=10)
+        tk.Label(search_frame, text="Search:").pack(side=tk.LEFT)
+        self.search_entry = ttk.Entry(search_frame)
+        self.search_entry.pack(side=tk.LEFT, padx=5)
+        self.search_entry.bind("<KeyRelease>", self.update_list)
 
-# set the position of the window to the center of the screen
-root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+        # Items list
+        self.tree = ttk.Treeview(self, columns=("value", "action"), show="headings")
+        self.tree.heading("value", text="Value")
+        self.tree.heading("action", text="Action")
+        self.tree.pack(pady=10, fill=tk.BOTH, expand=True)
 
-# test new lable and new lable
-tk.Label(root, text="classic theme").pack()
-ttk.Label(root, text="new theme").pack()
+        self.update_list()
 
+    def load_items(self):
+        # This function should be modified to load items from your project's data source
+        # For demonstration, we'll use a static dictionary
+        return {"Item 1": 0, "Item 2": 0, "Item 3": 0, "Item 4": 0}
 
+    def update_list(self, event=None):
+        search_term = self.search_entry.get().lower()
+        self.filtered_items = {k: v for k, v in self.items.items() if search_term in k.lower()}
 
+        # Clear current items in the list
+        for row in self.tree.get_children():
+            self.tree.delete(row)
 
+        # Add filtered items to the list
+        for item, value in self.filtered_items.items():
+            self.tree.insert("", tk.END, values=(item, value, "Increment"), tags=(item,))
+            self.tree.tag_bind(item, "<Double-1>", lambda event, item=item: self.increment_item(item))
 
-root.mainloop()
+    def increment_item(self, item):
+        self.items[item] += 1
+        self.update_list()
+
+if __name__ == "__main__":
+    app = Application()
+    app.mainloop()
