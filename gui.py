@@ -54,13 +54,29 @@ class Application(tk.Tk):
         self.search_entry.pack(side=tk.LEFT, padx=5)
         self.search_entry.bind("<KeyRelease>", self.update_list)
 
-        self.list_frame = ttk.Frame(self)
-        self.list_frame.pack(pady=10, fill=tk.BOTH, expand=True)
+        container = ttk.Frame(self)
+        container.pack(pady=10, fill=tk.BOTH, expand=True)
+
+        canvas = tk.Canvas(container)
+        scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        self.list_frame = ttk.Frame(canvas)
+
+        self.list_frame.bind(
+            "<Configure>", lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
+
+        frame_window = canvas.create_window((0, 0), window=self.list_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.update_list()
 
     def load_items(self):
-        return {"Item 1": 0, "Item 2": 0, "Item 3": 0, "Item 4": 0}
+        return {f"Item {i}": 0 for i in range(1, 21)}
 
     def update_list(self, event=None):
         search_term = self.search_entry.get().lower()
