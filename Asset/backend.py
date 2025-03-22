@@ -107,8 +107,8 @@ def search(title, value, comment, constant, workspace=None):
     """search between database data"""
     conn = sqlite3.connect(PATH + "list_of_work.db")
     cur = conn.cursor()
-    cur.execute(f"SELECT * FROM {workspace} WHERE title=? OR value=? OR constant=? OR comment=?",
-                (title, value, constant, comment))
+    cur.execute(f"SELECT * FROM {workspace} WHERE title LIKE ? OR value=? OR constant=? OR comment LIKE ?",
+                (f"%{title}%", value, constant, f"%{comment}%"))
     row = cur.fetchall()
     conn.close()
     return row
