@@ -1,9 +1,9 @@
 import sys
 import importlib
+import os
 import tkinter as tk
 from tkinter import ttk
 from plugin import plugins
-import os 
 from workspace_manager_module import workspace_manager
 from Asset import backend
 
@@ -15,7 +15,7 @@ else:
 
 def import_plugins():
     """Import all plugins exist in Asset/plugins folder and get program access to them"""
-    plugins = {}  # pylint: disable=W0621
+    plugins = {}  # pylint: disable=W0623
     # the plugins directory path
     plugins_dir = "Asset.plugins"  # change to directory
 
@@ -30,10 +30,7 @@ def import_plugins():
 
 import_plugins()
 
-M_L = []
-backend.fill_list(backend.view(workspace_manager.current_workspace))
 M_L = backend.view(workspace_manager.current_workspace)
-
 
 class Application(tk.Tk):
     def __init__(self):
@@ -76,7 +73,7 @@ class Application(tk.Tk):
         self.update_list()
 
     def load_items(self):
-        return {f"Item {i}": 0 for i in range(1, 21)}
+        return {str(item[1]): item[2] for item in M_L}  # Extract title and value
 
     def update_list(self, event=None):
         search_term = self.search_entry.get().lower()
@@ -93,6 +90,12 @@ class Application(tk.Tk):
             ttk.Button(row_frame, text="Increment", command=lambda i=item: self.increment_item(i)).pack(side=tk.RIGHT)
 
     def increment_item(self, item):
+        for i in range(len(M_L)):
+            if M_L[i][1] == item:
+                new_value = int(M_L[i][2]) + 1
+                backend.update(M_L[i][0], title=M_L[i][1], value=new_value, constant=M_L[i][3], comment=M_L[i][4], workspace=workspace_manager.current_workspace)
+                M_L[i] = (M_L[i][0], M_L[i][1], new_value, M_L[i][3], M_L[i][4])
+                break
         self.items[item] += 1
         self.update_list()
 
