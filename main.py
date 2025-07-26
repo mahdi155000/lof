@@ -4,6 +4,7 @@ import sys
 import importlib
 import termcolor2
 import pyfiglet
+import readline  # <-- Added for autocomplete
 from Asset import backend
 from Asset.plugins import exit_list
 from plugin import plugins
@@ -41,6 +42,34 @@ def import_plugins():
 
 # --- Load Plugins ---
 all_plugins = import_plugins()
+
+# --- Autocomplete Setup ---
+def get_all_commands(plugins, all_plugins):
+    commands = set()
+    # flat plugin names
+    commands.update(plugins.keys())
+    commands.update(all_plugins.keys())
+    # add subcommands if any
+    for cmd, val in plugins.items():
+        if isinstance(val, dict):
+            for sub in val.keys():
+                commands.add(f"{cmd} {sub}")
+    for cmd, val in all_plugins.items():
+        if isinstance(val, dict):
+            for sub in val.keys():
+                commands.add(f"{cmd} {sub}")
+    # add exit commands
+    commands.update(exit_list)
+    return sorted(commands)
+
+def completer(text, state):
+    options = [cmd for cmd in get_all_commands(plugins, all_plugins) if cmd.startswith(text)]
+    if state < len(options):
+        return options[state]
+    return None
+
+readline.parse_and_bind("tab: complete")
+readline.set_completer(completer)
 
 # --- Main List Initialization ---
 def refresh_main_list():
