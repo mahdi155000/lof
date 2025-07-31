@@ -171,3 +171,4 @@ Asset/plugins/__pycache__/
 config.py
 notwork/
 test.py
+.buildozer
