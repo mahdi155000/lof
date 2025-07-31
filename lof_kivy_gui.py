@@ -12,6 +12,10 @@ from kivy.uix.scrollview import ScrollView
 from kivy.properties import ListProperty
 from Asset import backend
 from workspace_manager_module import workspace_manager
+from kivy.uix.recycleboxlayout import RecycleBoxLayout
+from kivy.uix.recycleview.layout import LayoutSelectionBehavior
+from kivy.uix.widget import Widget
+from kivy.graphics import Color, Rectangle
 
 class ItemRow(BoxLayout):
     values = ListProperty()
@@ -25,10 +29,28 @@ class ItemRow(BoxLayout):
 class ItemList(RecycleView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.viewclass = 'Label'
         self.data = []
+        # Add layout manager for vertical list
+        self.layout_manager = RecycleBoxLayout(default_size=(None, 40),
+                                               default_size_hint=(1, None),
+                                               size_hint=(1, None),
+                                               orientation='vertical')
+        self.layout_manager.bind(minimum_height=self.layout_manager.setter('height'))
+        self.add_widget(self.layout_manager)
+        # Set light background
+        with self.canvas.before:
+            Color(1, 1, 1, 1)  # White
+            self.bg_rect = Rectangle(size=self.size, pos=self.pos)
+        self.bind(size=self._update_bg, pos=self._update_bg)
+
+    def _update_bg(self, *args):
+        self.bg_rect.size = self.size
+        self.bg_rect.pos = self.pos
 
     def update_items(self, items):
-        self.data = [{'values': item} for item in items]
+        # Show all fields as a string in each label
+        self.data = [{'text': ' | '.join(str(x) for x in item), 'font_size': '16sp', 'size_hint_y': None, 'height': 40} for item in items]
 
 class LOFRoot(BoxLayout):
     def __init__(self, **kwargs):
@@ -48,7 +70,7 @@ class LOFRoot(BoxLayout):
 
         # Item list in ScrollView for Android
         scroll = ScrollView(size_hint_y=0.7)
-        self.item_list = ItemList(size_hint_y=None, height=400)
+        self.item_list = ItemList(size_hint_y=1)
         scroll.add_widget(self.item_list)
         self.add_widget(scroll)
 
