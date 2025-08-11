@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>List of Work</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        th { background: #eee; }
+        form.inline { display: inline; }
+    </style>
+</head>
+<body>
+    <h1>List of Work</h1>
+    <form method="post">
+        Workspace: <input type="text" name="workspace" value="{{ workspace }}">
+        <button type="submit">Switch</button>
+    </form>
+    <hr>
+    <form action="{{ url_for('add') }}" method="post">
+        <input type="text" name="text" placeholder="New item">
+        <button type="submit">Add</button>
+    </form>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Text</th>
+            <th>Actions</th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td>{{ item[0] }}</td>
+            <td>
+                <form action="{{ url_for('edit', item_id=item[0]) }}" method="post" class="inline">
+                    <input type="text" name="text" value="{{ item[1] }}">
+                    <button type="submit">Edit</button>
+                </form>
+            </td>
+            <td>
+                <form action="{{ url_for('delete', item_id=item[0]) }}" method="post" class="inline">
+                    <button type="submit" onclick="return confirm('Delete this item?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
