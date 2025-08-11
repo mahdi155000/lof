@@ -177,3 +177,12 @@ connect()
 # print(view("watched_movie"))
 # insert('Movies',1,'S04',"This is a movies", 'watched_movie')
 # print(view("watched_movie"))
+
+
+def edit_value(id, value, workspace):
+    """Update only the value field of a row"""
+    conn = sqlite3.connect(PATH + "list_of_work.db")
+    cur = conn.cursor()
+    cur.execute(f"UPDATE {workspace} SET value=? WHERE id=?", (value, id))
+    conn.commit()
+    conn.close()
