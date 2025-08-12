@@ -63,8 +63,11 @@ def plus(item_id):
     items = backend.view(ws)
     for item in items:
         if str(item[0]) == str(item_id):
-            new_value = int(item[2]) + 1
-            backend.edit_value(item_id, new_value, ws)
+            try:
+                new_value = int(item[2]) + 1
+                backend.edit_value(int(item_id), new_value, ws)
+            except Exception as e:
+                print("Error incrementing value:", e)
             break
     return redirect(url_for('index'))
 
