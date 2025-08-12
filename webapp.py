@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, send_file
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_file
 from Asset import backend
 from workspace_manager_module import workspace_manager
 import requests
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Change to a random string!
 
 SERVER_URL = "http://192.168.1.100:5000"  # Change to your server's IP
 
@@ -21,6 +22,8 @@ def upload_db():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
     if request.method == 'POST':
         workspace = request.form.get('workspace')
         if workspace:
@@ -90,6 +93,25 @@ def upload_db_api():
     file = request.files['dbfile']
     file.save('Asset/list_of_work.db')
     return jsonify({'status': 'ok'})
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        # Replace with your own authentication logic!
+        if username == 'admin' and password == 'password':
+            session['logged_in'] = True
+            return redirect(url_for('index'))
+        else:
+            error = 'Invalid credentials'
+    return render_template('login.html', error=error)
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
