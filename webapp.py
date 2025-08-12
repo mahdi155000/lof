@@ -5,7 +5,7 @@ import requests
 
 app = Flask(__name__)
 
-SERVER_URL = "http://192.168.1.142:5000"  # Change to your server's IP
+SERVER_URL = "http://192.168.1.100:5000"  # Change to your server's IP
 
 def download_db():
     r = requests.get(SERVER_URL + "/api/download_db")
