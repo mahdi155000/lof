@@ -6,6 +6,7 @@ from workspace_manager_module import workspace_manager
 
 
 @plugin("show")
+@plugin("ls")
 def show_function(do_what='plus'):
     M_L = backend.view(workspace_manager.current_workspace)
     id_counter = 1
