@@ -64,6 +64,16 @@ def save_or_update_sequential(title: str, filename: str):
                 workspace=WORKSPACE
             )
             print(f"Updated entry: {title} -> Season: {season}, Episode: {episode}")
+        elif season == (current_season + 1) and episode == 1:
+            backend.update(
+                id=exact_match[0],
+                title=title,
+                value=1,
+                constant=season,
+                comment="Detected via VLC",
+                workspace=WORKSPACE
+            )
+            print(f"Updated entry: {title} -> NEW Season: {season}, Episode {episode}")
         else:
             print(f"Skipped: {title} -> Season: {season}, Episode: {episode} (not sequential)")
     else:
