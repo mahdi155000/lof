@@ -25,11 +25,12 @@ def extract_season_episode(filename: str):
         return int(season), int(episode)
     return None, None
 
-def save_or_insert_title(title: str, filename: str):
-    """Update existing row if exact title exists, else insert new row at the end."""
+def save_or_update_sequential(title: str, filename: str):
+    """Update if the episode is exactly +1 in the same season, else insert new row if title not found."""
     season, episode = extract_season_episode(filename)
-    season_val = season if season is not None else ""
-    episode_val = episode if episode is not None else ""
+    if season is None or episode is None:
+        # Cannot determine season/episode, skip
+        return
 
     # Get all entries in the workspace
     all_entries = backend.view(WORKSPACE)
@@ -37,33 +38,44 @@ def save_or_insert_title(title: str, filename: str):
     # Look for an exact match
     exact_match = None
     for row in all_entries:
-        row_id, row_title, _, _, _ = row
+        row_id, row_title, row_value, row_constant, _ = row
         if row_title == title:
             exact_match = row
             break
 
     if exact_match:
-        # Update the existing row with this title
-        row_id = exact_match[0]
-        backend.update(
-            id=row_id,
-            title=title,
-            value=episode_val,
-            constant=season_val,
-            comment="Detected via VLC",
-            workspace=WORKSPACE
-        )
-        print(f"Updated existing entry: {title} -> Season: {season_val}, Episode: {episode_val}")
+        current_season = exact_match[3]  # constant = season
+        current_episode = exact_match[2]  # value = episode
+        try:
+            current_season = int(current_season)
+            current_episode = int(current_episode)
+        except ValueError:
+            # If stored values are not integers, skip updating
+            return
+
+        # Only update if season is the same and episode = current + 1
+        if season == current_season and episode == current_episode + 1:
+            backend.update(
+                id=exact_match[0],
+                title=title,
+                value=episode,
+                constant=season,
+                comment="Detected via VLC",
+                workspace=WORKSPACE
+            )
+            print(f"Updated entry: {title} -> Season: {season}, Episode: {episode}")
+        else:
+            print(f"Skipped: {title} -> Season: {season}, Episode: {episode} (not sequential)")
     else:
         # Insert new row at the end
         backend.insert(
             titile=title,
-            value=episode_val,
-            constant=season_val,
+            value=episode,
+            constant=season,
             comment="Detected via VLC",
             workspace=WORKSPACE
         )
-        print(f"Inserted new entry at end: {title} -> Season: {season_val}, Episode: {episode_val}")
+        print(f"Inserted new entry at end: {title} -> Season: {season}, Episode: {episode}")
 
 def find_vlc_player(session_bus):
     try:
@@ -111,7 +123,7 @@ def listen_vlc():
                             "Press Enter to accept, or type a corrected title: "
                         ).strip()
                         confirmed_title = user_input if user_input else extracted_title
-                        save_or_insert_title(confirmed_title, raw_filename)
+                        save_or_update_sequential(confirmed_title, raw_filename)
                 time.sleep(1)
             except dbus.exceptions.DBusException:
                 print("\nVLC closed — waiting for it to reopen…")
