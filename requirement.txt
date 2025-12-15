@@ -8,7 +8,6 @@ python-dateutil==2.9.0.post0
 python-vlc==3.0.21203
 pytimeparse2==1.7.1
 sh==1.14.3
-sqlite3-to-mysql==2.4.0
 termcolor==2.4.0
 termcolor2==0.0.3
 virtualenv==20.32.0
