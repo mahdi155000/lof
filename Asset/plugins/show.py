@@ -14,14 +14,14 @@ def show_function(do_what='plus'):
         value = item[2]
         constant = item[3]
 
-        # Determine last episode if it's a JSON map
+        # Determine last episode number if it's a JSON map
         if constant == "episodes":
             try:
                 ep_map = json.loads(value)
-                # Find the highest season and last episode
+                # Get the last season and its highest episode
                 last_season = max(int(s) for s in ep_map.keys())
                 last_episode = max(ep_map[str(last_season)])
-                display_value = f"S{last_season}E{last_episode}"
+                display_value = last_episode  # Only the episode number
             except Exception:
                 display_value = value
         else:
