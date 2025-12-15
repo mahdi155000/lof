@@ -12,3 +12,4 @@ sqlite3-to-mysql==2.4.0
 termcolor==2.4.0
 termcolor2==0.0.3
 virtualenv==20.32.0
+dbus-python==1.4.0
