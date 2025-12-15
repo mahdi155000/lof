@@ -9,6 +9,10 @@ from Asset import backend
 from Asset.plugins import exit_list
 from plugin import plugins
 from workspace_manager_module import workspace_manager
+from vlc_track import VLCListerner
+
+# --- Configs ---
+vlc_tracker_start = True
 
 # --- Constants and Path Setup ---
 if os.name == 'nt':
@@ -27,6 +31,13 @@ if os.path.isfile(PATH + f"Asset{os.sep}config.py"):
 
 # --- Workspace Setup ---
 workspace_manager.switch_workspace('lof')
+
+# --- runing the vlc_tracker ---
+
+if vlc_tracker_start and workspace_manager.current_workspace == 'lof':
+    vlc_listener = VLCListerner()
+    vlc_listener.start_in_background()
+
 
 # --- Plugin Importer ---
 def import_plugins():
