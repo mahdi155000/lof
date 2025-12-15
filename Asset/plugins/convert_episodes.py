@@ -1,68 +1,59 @@
-from plugin import plugin, register_help
+from plugin import plugin
 from Asset import backend
-from workspace_manager_module import workspace_manager
 import json
 import termcolor2
+from workspace_manager_module import workspace_manager
 
 
-@register_help
 @plugin("convert_episodes")
 def convert_episodes():
-    """
-    Convert old episode format (single episode number)
-    into new episode-map format (Option A).
-    """
-
     workspace = workspace_manager.current_workspace
     rows = backend.view(workspace)
 
-    converted = 0
-    skipped = 0
+    backend.fill_list(rows)
 
-    for row in rows:
-        row_id, title, value, constant, comment = row
+    index = int(input(
+        f"Enter {termcolor2.colored('number', 'yellow')} to convert: "
+    )) - 1
 
-        # Try to detect already converted entries
-        try:
-            if isinstance(value, (str, bytes)):
-                json.loads(value)
-                skipped += 1
-                continue
-        except Exception:
-            pass
+    row = rows[index]
+    row_id, title, value, constant, comment = row
 
-        # Old format must have integer season & episode
-        try:
-            season = int(constant)
-            episode = int(value)
-        except Exception:
-            skipped += 1
-            continue
+    try:
+        season = int(constant)
+        episode = int(value)
+    except ValueError:
+        print(termcolor2.colored(
+            "This entry is not in old season/episode format.", "red"
+        ))
+        return
 
-        # Build episode map
-        episode_map = {
-            str(season): list(range(1, episode + 1))
-        }
+    print(f"\nConverting: {termcolor2.colored(title, 'cyan')}")
+    print(f"Detected → Season {season}, Episode {episode}")
 
-        # Serialize to JSON
-        serialized = json.dumps(episode_map)
+    episode_map = {}
 
-        backend.update(
-            id=row_id,
-            title=title,
-            value=serialized,
-            constant=str(season),
-            comment="Migrated to episode map format",
-            workspace=workspace
-        )
+    # ----------------------------------
+    # Previous seasons
+    # ----------------------------------
+    for s in range(1, season):
+        count = int(input(
+            f"How many episodes in Season {s}? "
+        ))
+        episode_map[str(s)] = list(range(1, count + 1))
 
-        converted += 1
-        termcolor2.colored(
-            f"Converted: {title} | S{season} up to E{episode}",
-            "green"
-        )
+    # ----------------------------------
+    # Current season (auto-fill)
+    # ----------------------------------
+    episode_map[str(season)] = list(range(1, episode + 1))
 
-    termcolor2.colored(
-        f"\nDone. Converted: {converted}, Skipped: {skipped}",
-        "cyan"
+    backend.update(
+        id=row_id,
+        title=title,
+        value=json.dumps(episode_map),
+        constant="episodes",
+        comment="Converted from old format",
+        workspace=workspace
     )
+
+    print(termcolor2.colored("✔ Conversion completed", "green"))
