@@ -5,6 +5,7 @@ import importlib
 import termcolor2
 import pyfiglet
 import readline  # <-- Added for autocomplete
+import json
 from Asset import backend
 from Asset.plugins import exit_list
 from plugin import plugins
@@ -33,11 +34,9 @@ if os.path.isfile(PATH + f"Asset{os.sep}config.py"):
 workspace_manager.switch_workspace('lof')
 
 # --- runing the vlc_tracker ---
-
 if vlc_tracker_start and workspace_manager.current_workspace == 'lof':
     vlc_listener = VLCListerner()
     vlc_listener.start_in_background()
-
 
 # --- Plugin Importer ---
 def import_plugins():
@@ -57,10 +56,8 @@ all_plugins = import_plugins()
 # --- Autocomplete Setup ---
 def get_all_commands(plugins, all_plugins):
     commands = set()
-    # flat plugin names
     commands.update(plugins.keys())
     commands.update(all_plugins.keys())
-    # add subcommands if any
     for cmd, val in plugins.items():
         if isinstance(val, dict):
             for sub in val.keys():
@@ -69,7 +66,6 @@ def get_all_commands(plugins, all_plugins):
         if isinstance(val, dict):
             for sub in val.keys():
                 commands.add(f"{cmd} {sub}")
-    # add exit commands
     commands.update(exit_list)
     return sorted(commands)
 
@@ -99,11 +95,48 @@ def handle_number_command(lNumber, M_L):
         idx = abs(lNumber) - 1
         add_number = 1 if lNumber >= 0 else -1
         li = M_L[idx]
-        backend.update(
-            li[0], title=li[1], value=(int(li[2]) + add_number),
-            constant=li[3], comment=li[4], workspace=workspace_manager.current_workspace
-        )
+        value, constant = li[2], li[3]
+
+        # Check if this is the new JSON format
+        if constant == "episodes":
+            try:
+                ep_map = json.loads(value)
+                last_season = str(max(int(s) for s in ep_map.keys()))
+                last_episode = max(ep_map[last_season])
+
+                new_episode = last_episode + add_number
+                if new_episode < 1:
+                    print("Episode cannot be less than 1")
+                    return False
+
+                # Append new episode instead of replacing the last one
+                ep_map[last_season].append(new_episode)
+                new_value = json.dumps(ep_map)
+
+                backend.update(
+                    li[0],
+                    title=li[1],
+                    value=new_value,
+                    constant=constant,
+                    comment=li[4],
+                    workspace=workspace_manager.current_workspace
+                )
+            except Exception as e:
+                print("Failed to update JSON episodes:", e)
+                return False
+        else:
+            # Old integer format
+            backend.update(
+                li[0],
+                title=li[1],
+                value=int(value) + add_number,
+                constant=constant,
+                comment=li[4],
+                workspace=workspace_manager.current_workspace
+            )
+
         return True
+
     except IndexError:
         print("Your input number is out of range")
     except ValueError:
