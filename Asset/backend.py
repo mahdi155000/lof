@@ -189,3 +189,90 @@ def add_session(id, start_time, end_time, workspace=None):
         cur.execute(f"UPDATE {workspace} SET sessions=? WHERE id=?", (json.dumps(sessions), id))
     conn.commit()
     conn.close()
+
+def add_sessions_column(workspace):
+    conn = sqlite3.connect(PATH + "list_of_work.db")
+    cur = conn.cursor()
+    cur.execute(f"ALTER TABLE {workspace} ADD COLUMN sessions TEXT")
+    conn.commit()
+    conn.close()
+
+# ----------------------------
+# New functions for JSON episodes + sessions
+# ----------------------------
+
+def insert_json_episode(titile='', value='', constant='', comment='', sessions=None, workspace=None):
+    """Insert a new row with JSON episodes and session info"""
+    conn = sqlite3.connect(PATH + "list_of_work.db")
+    cur = conn.cursor()
+    cur.execute(
+        f"INSERT INTO {workspace} VALUES (NULL, ?, ?, ?, ?, ?)",
+        (titile, value, constant, comment, json.dumps(sessions or []))
+    )
+    conn.commit()
+    conn.close()
+
+
+def update_json_episode(id, title='', value='', constant='', comment='', sessions=None, workspace=None):
+    """Update a row with JSON episodes and session info"""
+    conn = sqlite3.connect(PATH + "list_of_work.db")
+    cur = conn.cursor()
+    cur.execute(
+        f"UPDATE {workspace} SET title=?, value=?, constant=?, comment=?, sessions=? WHERE id=?",
+        (title, value, constant, comment, json.dumps(sessions or []), id)
+    )
+    conn.commit()
+    conn.close()
+
+def update_database():
+    conn = sqlite3.connect(PATH + "list_of_work.db")
+    cur = conn.cursor()
+    cur.execute(
+        f"ALTER TABLE lof ADD COLUMN sessions TEXT DEFAULT ''"
+    )
+    conn.commit()
+    conn.close()
+
+def view_with_sessions(workspace='lof'):
+    """
+    View database rows including the new 'sessions' column.
+    Returns a list of tuples: (id, title, value, constant, comment, sessions)
+    """
+    conn = sqlite3.connect(PATH + "list_of_work.db")
+    cur = conn.cursor()
+    
+    # Try to fetch the sessions column; if it does not exist, return None for sessions
+    try:
+        cur.execute(f"SELECT id, title, value, constant, comment, sessions FROM {workspace}")
+        rows = cur.fetchall()
+    except sqlite3.OperationalError:
+        # Fallback if 'sessions' column doesn't exist
+        cur.execute(f"SELECT id, title, value, constant, comment FROM {workspace}")
+        rows = [(r + (None,)) for r in cur.fetchall()]
+
+    conn.close()
+    return rows
+
+def update_sessions(id, new_session, workspace=None):
+    """
+    Append a new session to the `sessions` column of the row.
+    `new_session` is a dict like: {"start": timestamp, "end": timestamp, "duration": seconds}
+    """
+    workspace = workspace or current_workspace
+    conn = sqlite3.connect(PATH + "list_of_work.db")
+    cur = conn.cursor()
+    # Get existing sessions
+    cur.execute(f"SELECT sessions FROM {workspace} WHERE id=?", (id,))
+    row = cur.fetchone()
+    if row is None:
+        conn.close()
+        return
+    existing = row[0]
+    try:
+        sessions = json.loads(existing) if existing else []
+    except Exception:
+        sessions = []
+    sessions.append(new_session)
+    cur.execute(f"UPDATE {workspace} SET sessions=? WHERE id=?", (json.dumps(sessions), id))
+    conn.commit()
+    conn.close()

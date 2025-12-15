@@ -1,4 +1,3 @@
-# vlc_tracker.py
 import re
 import time
 import threading
@@ -13,11 +12,11 @@ class VLCListerner:
         self.WORKSPACE = workspace or backend.current_workspace or "lof"
         backend.connect(self.WORKSPACE)
         self.last_track = None
+        self.current_session_start = None
 
     # --------------------------------------------------
     # Filename parsing
     # --------------------------------------------------
-
     @staticmethod
     def extract_title(filename: str) -> str:
         """Extract cleaned title without season/episode."""
@@ -36,15 +35,14 @@ class VLCListerner:
         return None, None
 
     # --------------------------------------------------
-    # Core logic (JSON episode map)
+    # Core logic (JSON episode map + sessions)
     # --------------------------------------------------
-
     def save_or_update_sequential(self, title: str, filename: str):
         season, episode = self.extract_season_episode(filename)
         if season is None or episode is None:
             return
 
-        rows = backend.view(self.WORKSPACE)
+        rows = backend.view_with_sessions(self.WORKSPACE)
         row_match = None
 
         for row in rows:
@@ -52,43 +50,52 @@ class VLCListerner:
                 row_match = row
                 break
 
+        # New session timing
+        now = time.time()
+
+        if self.current_session_start is None:
+            self.current_session_start = now
+
         # --------------------------------------------------
         # EXISTING TITLE
         # --------------------------------------------------
         if row_match:
-            row_id, _, value, _, _ = row_match
-
+            row_id, _, value, _, _, sessions_json = row_match
             try:
                 episode_map = json.loads(value)
             except Exception:
                 print(f"Skipped (invalid JSON): {title}")
                 return
 
+            try:
+                sessions_list = json.loads(sessions_json)
+            except Exception:
+                sessions_list = []
+
             season_key = str(season)
 
-            # Case 1: same season, sequential episode
-            if season_key in episode_map:
+            # Add missing past episodes automatically
+            if season_key not in episode_map:
+                episode_map[season_key] = list(range(1, episode + 1))
+            else:
                 last_episode = max(episode_map[season_key])
-                if episode == last_episode + 1:
+                if episode > last_episode:
                     episode_map[season_key].append(episode)
                 else:
-                    print(f"Skipped (not sequential): {title} S{season}E{episode}")
+                    print(f"Skipped: {title} S{season}E{episode} (already exists)")
                     return
 
-            # Case 2: new season starting with episode 1
-            else:
-                if episode == 1:
-                    episode_map[season_key] = [1]
-                else:
-                    print(f"Skipped (invalid new season): {title} S{season}E{episode}")
-                    return
+            # Record session time
+            sessions_list.append({"start": self.current_session_start, "end": now, "duration": now - self.current_session_start})
+            self.current_session_start = now
 
-            backend.update(
+            backend.update_json_episode(
                 id=row_id,
                 title=title,
                 value=json.dumps(episode_map),
                 constant="episodes",
                 comment="Detected via VLC",
+                sessions=sessions_list,
                 workspace=self.WORKSPACE
             )
 
@@ -99,12 +106,13 @@ class VLCListerner:
         # NEW TITLE → INSERT AT END
         # --------------------------------------------------
         episode_map = {str(season): [episode]}
-
-        backend.insert(
+        sessions_list = [{"start": now, "end": now, "duration": 0}]
+        backend.insert_json_episode(
             titile=title,
             value=json.dumps(episode_map),
             constant="episodes",
             comment="Detected via VLC",
+            sessions=sessions_list,
             workspace=self.WORKSPACE
         )
 
@@ -113,7 +121,6 @@ class VLCListerner:
     # --------------------------------------------------
     # VLC DBus handling
     # --------------------------------------------------
-
     @staticmethod
     def find_vlc_player(session_bus):
         try:
