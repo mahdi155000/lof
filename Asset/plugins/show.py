@@ -31,6 +31,10 @@ def show_function(do_what='plus'):
         # Coloring
         show_color = 'blue' if item[0] % 2 else 'red'
 
-        text = f"{id_counter}) for {do_what} one {title:<45} {display_value}"
+        if id_counter <= 9:
+            text = f"0{id_counter}) for {do_what} one {title:<45} {display_value}"
+        else:
+            text = f"{id_counter}) for {do_what} one {title:<45} {display_value}"
+            
         print(termcolor2.colored(text, show_color))
         id_counter += 1
