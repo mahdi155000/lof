@@ -74,7 +74,7 @@ class VLCListerner:
         return {
             "status": status,
             "position": position_sec,
-            "duration": duration_sec,
+            # "duration": duration_sec,
             "filename": raw
         }
 
