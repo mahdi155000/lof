@@ -16,6 +16,7 @@ class VLCListerner:
 
         self.last_filename = None
         self.current_session_start = None
+        self.last_identity = None  # (title, season, episode)
 
     # ----------------------------------
     # Title extraction
@@ -58,27 +59,58 @@ class VLCListerner:
         if not raw:
             return
 
-        # Detect change by filename
-        if raw == self.last_filename:
-            return
-
-        self.last_filename = raw
-
         title = self.extract_title(raw)
         season, episode = self._get_season_episode(raw)
 
-        # 🔹 PRINT INFO HERE
-        if season is not None and episode is not None:
-            print(
-                f"[VLC] New episode detected → "
-                f"{title} | Season {season} Episode {episode}"
-            )
-        else:
-            print(
-                f"[VLC] New movie detected → {title}"
-            )
+        identity = (title, season, episode)
 
+        # Same logical media reopened → ignore
+        if identity == self.last_identity:
+            return
+
+        # ---------- DECISION ----------
+        already_exists = False
+        if season is not None and episode is not None:
+            already_exists = self._episode_exists(title, season, episode)
+
+        # ---------- PRINT ----------
+        if season is not None and episode is not None:
+            if not already_exists:
+                if self.last_identity and self.last_identity[0] == title:
+                    old = self.last_identity
+                    print(
+                        f"[VLC] Updated: {title} "
+                        f"S{old[1]:02}E{old[2]:02} → "
+                        f"S{season:02}E{episode:02}"
+                    )
+                else:
+                    print(
+                        f"[VLC] New series detected → "
+                        f"{title} S{season:02}E{episode:02}"
+                    )
+        else:
+            if identity != self.last_identity:
+                print(f"[VLC] New movie detected → {title}")
+
+        self.last_identity = identity
         self._save_track_session(title, raw)
+
+
+    def _episode_exists(self, title, season, episode):
+        rows = backend.view(self.WORKSPACE)
+        for row in rows:
+            if row[1] == title and row[3] == "episodes":
+                try:
+                    ep_map = json.loads(row[2])
+                except Exception:
+                    return False
+
+                return (
+                    str(season) in ep_map and
+                    episode in ep_map[str(season)]
+                )
+        return False
+
 
    # ----------------------------------
     # Save session (movies + episodes)
