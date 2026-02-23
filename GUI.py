@@ -16,6 +16,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
+from kivy.uix.spinner import Spinner
 from kivy.uix.textinput import TextInput
 from kivy.utils import platform
 
@@ -149,6 +150,8 @@ class LofRoot(BoxLayout):
         self.items = []
         self.category_buttons = {}
         self.source_buttons = {}
+        self.workspace_names = []
+        self._updating_workspace_spinner = False
         self.data_source = DataSourceManager()
 
         self._paint_background()
@@ -208,14 +211,32 @@ class LofRoot(BoxLayout):
             text=workspace_manager.current_workspace or "lof",
             hint_text="Workspace name",
         )
+        self.workspace_spinner = Spinner(
+            text="Choose workspace",
+            values=(),
+            size_hint_x=0.42,
+            background_normal="",
+            background_color=THEME["panel_soft"],
+            color=THEME["text"],
+            sync_height=True,
+        )
+        self.workspace_spinner.bind(text=self.on_workspace_selected)
         workspace_btn = ThemedButton(
             text="Switch",
             bg=THEME["accent_2"],
-            size_hint_x=0.28,
+            size_hint_x=0.2,
+        )
+        refresh_ws_btn = ThemedButton(
+            text="Refresh",
+            bg=(0.17, 0.55, 0.72, 1),
+            size_hint_x=0.2,
         )
         workspace_btn.bind(on_press=lambda *_: self.switch_workspace())
+        refresh_ws_btn.bind(on_press=lambda *_: self.refresh_workspace_options())
         workspace_row.add_widget(self.workspace_input)
+        workspace_row.add_widget(self.workspace_spinner)
         workspace_row.add_widget(workspace_btn)
+        workspace_row.add_widget(refresh_ws_btn)
         header.add_widget(workspace_row)
 
         server_row = BoxLayout(size_hint_y=None, height=dp(44), spacing=dp(8))
@@ -252,6 +273,7 @@ class LofRoot(BoxLayout):
 
         self.add_widget(header)
         self._refresh_source_chips()
+        self.refresh_workspace_options()
 
         chips = Card(
             THEME["panel"],
@@ -378,6 +400,7 @@ class LofRoot(BoxLayout):
         ok, message = self.data_source.download_db()
         self.log(message)
         if ok:
+            self.refresh_workspace_options()
             self.switch_workspace()
 
     def manual_push(self):
@@ -406,8 +429,43 @@ class LofRoot(BoxLayout):
         workspace_manager.switch_workspace(workspace)
         backend.switch_workspace(workspace)
         backend.connect(workspace)
+        self.refresh_workspace_options()
+        if workspace in self.workspace_names:
+            self._updating_workspace_spinner = True
+            self.workspace_spinner.text = workspace
+            self._updating_workspace_spinner = False
         self.log(f"Workspace: {workspace}")
         self.refresh_list()
+
+    def refresh_workspace_options(self):
+        try:
+            tables = sorted(backend.list_tables())
+        except Exception as exc:
+            self.log(f"Workspace list failed: {exc}")
+            return
+
+        self.workspace_names = [table for table in tables if not table.startswith("sqlite_")]
+        if not self.workspace_names:
+            self.workspace_names = ["lof"]
+
+        self.workspace_spinner.values = tuple(self.workspace_names)
+        current_workspace = workspace_manager.current_workspace or "lof"
+        if current_workspace in self.workspace_names:
+            selected = current_workspace
+        else:
+            selected = self.workspace_names[0]
+
+        self._updating_workspace_spinner = True
+        self.workspace_spinner.text = selected
+        self._updating_workspace_spinner = False
+
+    def on_workspace_selected(self, _spinner, selected_workspace):
+        if self._updating_workspace_spinner:
+            return
+        if not selected_workspace or selected_workspace == "Choose workspace":
+            return
+        self.workspace_input.text = selected_workspace
+        self.switch_workspace()
 
     def change_category(self, category, *_):
         self.selected_category = category
