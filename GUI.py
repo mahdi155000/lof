@@ -1,5 +1,6 @@
 """Cross-platform GUI for LOF using Kivy (Linux + Android)."""
 import json
+import os
 from functools import partial
 
 from Asset import backend
@@ -18,6 +19,11 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.textinput import TextInput
 from kivy.utils import platform
 
+try:
+    import requests
+except ImportError:
+    requests = None
+
 
 THEME = {
     "bg": (0.06, 0.08, 0.12, 1),
@@ -30,6 +36,9 @@ THEME = {
     "danger": (0.86, 0.3, 0.3, 1),
     "chip": (0.14, 0.2, 0.3, 1),
 }
+
+DEFAULT_SERVER_URL = os.environ.get("LOF_SERVER_URL", "http://192.168.1.100:5000")
+LOCAL_DB_PATH = os.path.join("Asset", "list_of_work.db")
 
 
 def start_vlc_tracker_if_available():
@@ -86,14 +95,61 @@ class ThemedInput(TextInput):
         self.font_size = "15sp"
 
 
+class DataSourceManager:
+    """Handle local/server DB access using existing API endpoints."""
+
+    def __init__(self, server_url=DEFAULT_SERVER_URL, local_db_path=LOCAL_DB_PATH):
+        self.server_url = server_url.rstrip("/")
+        self.local_db_path = local_db_path
+
+    def set_server_url(self, server_url):
+        self.server_url = (server_url or "").rstrip("/")
+
+    def _has_requests(self):
+        return requests is not None
+
+    def download_db(self):
+        if not self._has_requests():
+            return False, "requests package is not installed."
+        if not self.server_url:
+            return False, "Server URL is empty."
+        try:
+            response = requests.get(f"{self.server_url}/api/download_db", timeout=10)
+            response.raise_for_status()
+            with open(self.local_db_path, "wb") as db_file:
+                db_file.write(response.content)
+            return True, "Pulled server DB -> local."
+        except Exception as exc:
+            return False, f"Pull failed: {exc}"
+
+    def upload_db(self):
+        if not self._has_requests():
+            return False, "requests package is not installed."
+        if not self.server_url:
+            return False, "Server URL is empty."
+        if not os.path.isfile(self.local_db_path):
+            return False, f"Local DB not found: {self.local_db_path}"
+        try:
+            with open(self.local_db_path, "rb") as db_file:
+                files = {"dbfile": db_file}
+                response = requests.post(f"{self.server_url}/api/upload_db", files=files, timeout=10)
+            response.raise_for_status()
+            return True, "Pushed local DB -> server."
+        except Exception as exc:
+            return False, f"Push failed: {exc}"
+
+
 class LofRoot(BoxLayout):
     """Main dashboard and CRUD actions."""
 
     def __init__(self, **kwargs):
         super().__init__(orientation="vertical", spacing=dp(10), padding=dp(12), **kwargs)
         self.selected_category = "tasks"
+        self.data_mode = "local"
         self.items = []
         self.category_buttons = {}
+        self.source_buttons = {}
+        self.data_source = DataSourceManager()
 
         self._paint_background()
         self._build_ui()
@@ -123,7 +179,7 @@ class LofRoot(BoxLayout):
             padding=dp(14),
             spacing=dp(10),
             size_hint_y=None,
-            height=dp(140),
+            height=dp(248),
         )
 
         header_top = BoxLayout(size_hint_y=None, height=dp(32))
@@ -161,7 +217,41 @@ class LofRoot(BoxLayout):
         workspace_row.add_widget(self.workspace_input)
         workspace_row.add_widget(workspace_btn)
         header.add_widget(workspace_row)
+
+        server_row = BoxLayout(size_hint_y=None, height=dp(44), spacing=dp(8))
+        self.server_input = ThemedInput(
+            text=DEFAULT_SERVER_URL,
+            hint_text="Server URL: http://host:5000",
+        )
+        server_btn = ThemedButton(
+            text="Set Server",
+            bg=(0.2, 0.48, 0.75, 1),
+            size_hint_x=0.28,
+        )
+        server_btn.bind(on_press=lambda *_: self.set_server_url())
+        server_row.add_widget(self.server_input)
+        server_row.add_widget(server_btn)
+        header.add_widget(server_row)
+
+        mode_row = BoxLayout(size_hint_y=None, height=dp(40), spacing=dp(8))
+        for mode, title in (("local", "Local"), ("server", "Server"), ("both", "Both Sync")):
+            btn = ThemedButton(text=title, bg=THEME["chip"])
+            btn.bind(on_press=partial(self.set_data_mode, mode))
+            mode_row.add_widget(btn)
+            self.source_buttons[mode] = btn
+        header.add_widget(mode_row)
+
+        sync_row = BoxLayout(size_hint_y=None, height=dp(36), spacing=dp(8))
+        pull_btn = ThemedButton(text="Pull", bg=(0.17, 0.55, 0.72, 1))
+        push_btn = ThemedButton(text="Push", bg=(0.14, 0.63, 0.48, 1))
+        pull_btn.bind(on_press=lambda *_: self.manual_pull())
+        push_btn.bind(on_press=lambda *_: self.manual_push())
+        sync_row.add_widget(pull_btn)
+        sync_row.add_widget(push_btn)
+        header.add_widget(sync_row)
+
         self.add_widget(header)
+        self._refresh_source_chips()
 
         chips = Card(
             THEME["panel"],
@@ -258,6 +348,58 @@ class LofRoot(BoxLayout):
     def _refresh_category_chips(self):
         for category, btn in self.category_buttons.items():
             btn.background_color = THEME["accent_2"] if category == self.selected_category else THEME["chip"]
+
+    def _refresh_source_chips(self):
+        for mode, btn in self.source_buttons.items():
+            btn.background_color = THEME["accent"] if mode == self.data_mode else THEME["chip"]
+
+    def set_server_url(self):
+        server_url = self.server_input.text.strip()
+        self.data_source.set_server_url(server_url)
+        self.log(f"Server: {server_url or '(empty)'}")
+
+    def set_data_mode(self, mode, *_):
+        self.set_server_url()
+        self.data_mode = mode
+        self._refresh_source_chips()
+
+        if mode == "server":
+            ok, message = self.data_source.download_db()
+            self.log(message)
+            if ok:
+                self.switch_workspace()
+                return
+
+        self.log(f"Mode: {mode}")
+        self.refresh_list()
+
+    def manual_pull(self):
+        self.set_server_url()
+        ok, message = self.data_source.download_db()
+        self.log(message)
+        if ok:
+            self.switch_workspace()
+
+    def manual_push(self):
+        self.set_server_url()
+        ok, message = self.data_source.upload_db()
+        self.log(message)
+
+    def _sync_before_read(self):
+        if self.data_mode != "server":
+            return
+        ok, message = self.data_source.download_db()
+        if not ok:
+            self.log(message)
+
+    def _sync_after_write(self):
+        if self.data_mode not in {"server", "both"}:
+            return
+        ok, message = self.data_source.upload_db()
+        if not ok:
+            self.log(message)
+        else:
+            self.log(f"{message} (mode: {self.data_mode})")
 
     def switch_workspace(self):
         workspace = (self.workspace_input.text or "lof").strip()
@@ -368,6 +510,7 @@ class LofRoot(BoxLayout):
         return card
 
     def refresh_list(self):
+        self._sync_before_read()
         try:
             all_items = backend.view(workspace_manager.current_workspace)
         except Exception as exc:
@@ -424,6 +567,7 @@ class LofRoot(BoxLayout):
             comment=comment,
             workspace=workspace_manager.current_workspace,
         )
+        self._sync_after_write()
         self.title_input.text = ""
         self.value_input.text = ""
         self.constant_input.text = ""
@@ -459,6 +603,7 @@ class LofRoot(BoxLayout):
                 comment=comment,
                 workspace=workspace_manager.current_workspace,
             )
+            self._sync_after_write()
             self.refresh_list()
             self.log(f"Updated: {title}")
         except Exception as exc:
@@ -467,6 +612,7 @@ class LofRoot(BoxLayout):
     def delete_item(self, item_id, *_):
         try:
             backend.delete(item_id, workspace=workspace_manager.current_workspace)
+            self._sync_after_write()
             self.refresh_list()
             self.log(f"Deleted item #{item_id}")
         except Exception as exc:
@@ -533,6 +679,7 @@ class LofRoot(BoxLayout):
                     workspace=workspace_manager.current_workspace,
                     sessions=parsed_sessions,
                 )
+                self._sync_after_write()
                 popup.dismiss()
                 self.refresh_list()
                 self.log(f"Saved item #{item_id}")
